@@ -88,7 +88,7 @@ struct build_id_event {
 	struct perf_event_header header;
 	pid_t			 pid;
         /* ANDROID_CHANGE_BEGIN */
-#ifdef __BIONIC__
+#if defined(__BIONIC__) || defined(__APPLE__)
 	u8			 build_id[KERNEL_ALIGN(BUILD_ID_SIZE, sizeof(u64))];
 #else
 	u8			 build_id[ALIGN(BUILD_ID_SIZE, sizeof(u64))];

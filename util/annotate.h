@@ -11,7 +11,7 @@
 #else
 #include "include/linux/list.h"
 #include "include/linux/rbtree.h"
-#ifdef __BIONIC__
+#if defined(__BIONIC__) || defined(__APPLE__)
 #include <pthread.h>
 #endif
 #endif

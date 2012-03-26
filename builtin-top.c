@@ -60,13 +60,23 @@
 #include <sys/syscall.h>
 #include <sys/ioctl.h>
 #include <sys/poll.h>
+/* ANDROID_CHANGE_BEGIN */
+#ifndef __APPLE__
 #include <sys/prctl.h>
+#endif
+/* ANDROID_CHANGE_END */
 #include <sys/wait.h>
 #include <sys/uio.h>
 #include <sys/mman.h>
 
+/* ANDROID_CHANGE_BEGIN */
+#ifndef __APPLE__
 #include <linux/unistd.h>
 #include <linux/types.h>
+#else
+#include "util/include/linux/types.h"
+#endif
+/* ANDROID_CHANGE_END */
 
 static struct perf_top top = {
 	.count_filter		= 5,
@@ -935,6 +945,8 @@ out_err:
 
 static int __cmd_top(void)
 {
+	/* ANDROID_CHANGE_BEGIN */
+#ifndef __APPLE__
 	pthread_t thread;
 	int ret __used;
 	/*
@@ -986,6 +998,10 @@ static int __cmd_top(void)
 	}
 
 	return 0;
+#else
+	return -1;
+#endif
+	/* ANDROID_CHANGE_END */
 }
 
 static const char * const top_usage[] = {

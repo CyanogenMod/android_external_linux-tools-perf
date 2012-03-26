@@ -9,7 +9,7 @@
 #define DIV_ROUND_UP(n,d) (((n) + (d) - 1) / (d))
 
 /* ANDROID_CHANGE_BEGIN */
-#ifdef __BIONIC__
+#if defined(__BIONIC__) || defined(__APPLE__)
 /* Bionic defines ALIGN in sys/param.h */
 #define KERNEL_ALIGN(x,a)	__ALIGN_MASK(x,(typeof(x))(a)-1)
 #else

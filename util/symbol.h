@@ -1,7 +1,11 @@
 #ifndef __PERF_SYMBOL
 #define __PERF_SYMBOL 1
 
+/* ANDROID_CHANGE_BEGIN */
+#ifndef __APPLE__
 #include <linux/types.h>
+#endif
+/* ANDROID_CHANGE_END */
 #include <stdbool.h>
 #include <stdint.h>
 #include "map.h"

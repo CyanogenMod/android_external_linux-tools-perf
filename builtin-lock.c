@@ -14,7 +14,11 @@
 #include "util/session.h"
 
 #include <sys/types.h>
+/* ANDROID_CHANGE_BEGIN */
+#ifndef __APPLE__
 #include <sys/prctl.h>
+#endif
+/* ANDROID_CHANGE_END */
 #include <semaphore.h>
 #include <pthread.h>
 #include <math.h>

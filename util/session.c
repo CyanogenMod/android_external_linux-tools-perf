@@ -1,6 +1,12 @@
 #define _FILE_OFFSET_BITS 64
 
+/* ANDROID_CHANGE_BEGIN */
+#ifdef __APPLE__
+#include "include/linux/kernel.h"
+#else
 #include <linux/kernel.h>
+#endif
+/* ANDROID_CHANGE_END */
 
 #include <byteswap.h>
 #include <unistd.h>

@@ -51,7 +51,11 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <sys/stat.h>
+/* ANDROID_CHANGE_BEGIN */
+#ifndef __APPLE__
 #include <sys/statfs.h>
+#endif
+/* ANDROID_CHANGE_END */
 #include <fcntl.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -88,9 +92,7 @@
 #include <inttypes.h>
 
 /* ANDROID_CHANGE_BEGIN */
-#if 0
-#include "../../../include/linux/magic.h"
-#else
+#ifndef __APPLE__
 #include <linux/magic.h>
 #endif
 /* ANDROID_CHANGE_END */

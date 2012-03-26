@@ -1,7 +1,13 @@
 #ifndef __PERF_PARSE_OPTIONS_H
 #define __PERF_PARSE_OPTIONS_H
 
+/* ANDROID_CHANGE_BEGIN */
+#ifdef __APPLE__
+#include "include/linux/kernel.h"
+#else
 #include <linux/kernel.h>
+#endif
+/* ANDROID_CHANGE_END */
 #include <stdbool.h>
 
 enum parse_opt_type {

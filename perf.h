@@ -9,7 +9,7 @@ void get_term_dimensions(struct winsize *ws);
 /* ANDROID_CHANGE_BEGIN */
 #if 0
 #include "../../arch/x86/include/asm/unistd.h"
-#else
+#elif !defined(__APPLE__)
 #include <asm/unistd.h>
 #endif
 /* ANDROID_CHANGE_END */
@@ -150,6 +150,8 @@ static inline void perf_mmap__write_tail(struct perf_mmap *md,
 # define NSEC_PER_SEC			1000000000ULL
 #endif
 
+/* ANDROID_CHANGE_BEGIN */
+#ifndef __APPLE__
 static inline unsigned long long rdclock(void)
 {
 	struct timespec ts;
@@ -157,6 +159,8 @@ static inline unsigned long long rdclock(void)
 	clock_gettime(CLOCK_MONOTONIC, &ts);
 	return ts.tv_sec * 1000000000ULL + ts.tv_nsec;
 }
+#endif
+/* ANDROID_CHANGE_END */
 
 /*
  * Pick up some kernel type conventions:
@@ -171,6 +175,8 @@ static inline unsigned long long rdclock(void)
 	(void) (&_min1 == &_min2);		\
 	_min1 < _min2 ? _min1 : _min2; })
 
+/* ANDROID_CHANGE_BEGIN */
+#ifndef __APPLE__
 static inline int
 sys_perf_event_open(struct perf_event_attr *attr,
 		      pid_t pid, int cpu, int group_fd,
@@ -180,6 +186,8 @@ sys_perf_event_open(struct perf_event_attr *attr,
 	return syscall(__NR_perf_event_open, attr, pid, cpu,
 		       group_fd, flags);
 }
+#endif
+/* ANDROID_CHANGE_END */
 
 #define MAX_COUNTERS			256
 #define MAX_NR_CPUS			256

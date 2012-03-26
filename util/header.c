@@ -150,7 +150,7 @@ static int __dsos__write_buildid_table(struct list_head *head, pid_t pid,
 			continue;
 		len = pos->long_name_len + 1;
                 /* ANDROID_CHANGE_BEGIN */
-#ifdef __BIONIC__
+#if defined(__BIONIC__) || defined(__APPLE__)
 		len = KERNEL_ALIGN(len, NAME_ALIGN);
 #else
 		len = ALIGN(len, NAME_ALIGN);
@@ -732,7 +732,7 @@ static int perf_header__read_build_ids_abi_quirk(struct perf_header *header,
 	struct {
 		struct perf_event_header   header;
                 /* ANDROID_CHANGE_BEGIN */
-#ifdef __BIONIC__
+#if defined(__BIONIC__) || defined(__APPLE__)
 		u8			   build_id[KERNEL_ALIGN(BUILD_ID_SIZE, sizeof(u64))];
 #else
 		u8			   build_id[ALIGN(BUILD_ID_SIZE, sizeof(u64))];
@@ -983,7 +983,7 @@ int perf_event__synthesize_attr(struct perf_event_attr *attr, u16 ids, u64 *id,
 
 	size = sizeof(struct perf_event_attr);
         /* ANDROID_CHANGE_BEGIN */
-#ifdef __BIONIC__
+#if defined(__BIONIC__) || defined(__APPLE__)
 	size = KERNEL_ALIGN(size, sizeof(u64));
 #else
 	size = ALIGN(size, sizeof(u64));
@@ -1085,7 +1085,7 @@ int perf_event__synthesize_event_type(u64 event_id, char *name,
 	ev.event_type.header.type = PERF_RECORD_HEADER_EVENT_TYPE;
 	size = strlen(name);
         /* ANDROID_CHANGE_BEGIN */
-#ifdef __BIONIC__
+#if defined(__BIONIC__) || defined(__APPLE__)
 	size = KERNEL_ALIGN(size, sizeof(u64));
 #else
 	size = ALIGN(size, sizeof(u64));
@@ -1145,7 +1145,7 @@ int perf_event__synthesize_tracing_data(int fd, struct perf_evlist *evlist,
 	if (size <= 0)
 		return size;
         /* ANDROID_CHANGE_BEGIN */
-#ifdef __BIONIC__
+#if defined(__BIONIC__) || defined(__APPLE__)
 	aligned_size = KERNEL_ALIGN(size, sizeof(u64));
 #else
 	aligned_size = ALIGN(size, sizeof(u64));
@@ -1177,7 +1177,7 @@ int perf_event__process_tracing_data(union perf_event *event,
 	size_read = trace_report(session->fd, session->repipe);
 
         /* ANDROID_CHANGE_BEGIN */
-#ifdef __BIONIC__
+#if defined(__BIONIC__) || defined(__APPLE__)
 	padding = KERNEL_ALIGN(size_read, sizeof(u64)) - size_read;
 #else
 	padding = ALIGN(size_read, sizeof(u64)) - size_read;
@@ -1214,7 +1214,7 @@ int perf_event__synthesize_build_id(struct dso *pos, u16 misc,
 
 	len = pos->long_name_len + 1;
         /* ANDROID_CHANGE_BEGIN */
-#ifdef __BIONIC__
+#if defined(__BIONIC__) || defined(__APPLE__)
 	len = KERNEL_ALIGN(len, NAME_ALIGN);
 #else
 	len = ALIGN(len, NAME_ALIGN);

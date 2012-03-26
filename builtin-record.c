@@ -438,6 +438,8 @@ static void mmap_read_all(void)
 
 static int __cmd_record(int argc, const char **argv)
 {
+	/* ANDROID_CHANGE_BEGIN */
+#ifndef __APPLE__
 	int i;
 	struct stat st;
 	int flags;
@@ -733,6 +735,10 @@ static int __cmd_record(int argc, const char **argv)
 out_delete_session:
 	perf_session__delete(session);
 	return err;
+#else
+	return -1;
+#endif
+	/* ANDROID_CHANGE_END */
 }
 
 static const char * const record_usage[] = {

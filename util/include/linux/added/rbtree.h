@@ -94,8 +94,14 @@ static inline struct page * rb_insert_page_cache(struct inode * inode,
 #ifndef	_LINUX_RBTREE_H
 #define	_LINUX_RBTREE_H
 
+/* ANDROID_CHANGE_BEGIN */
+#ifdef __APPLE__
+#include "../kernel.h"
+#else
 #include <linux/kernel.h>
 #include <linux/stddef.h>
+#endif
+/* ANDROID_CHANGE_END */
 
 struct rb_node
 {

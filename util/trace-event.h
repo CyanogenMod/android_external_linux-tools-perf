@@ -6,7 +6,7 @@
 #include "session.h"
 
 /* ANDROID_CHANGE_BEGIN */
-#ifndef __BIONIC__
+#if !defined(__BIONIC__) && !defined(__APPLE__)
 #define __unused __attribute__((unused))
 #endif
 /* ANDROID_CHANGE_END */

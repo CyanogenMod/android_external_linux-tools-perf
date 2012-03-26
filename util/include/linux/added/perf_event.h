@@ -14,9 +14,15 @@
 #ifndef _LINUX_PERF_EVENT_H
 #define _LINUX_PERF_EVENT_H
 
+/* ANDROID_CHANGE_BEGIN */
+#ifndef __APPLE__
 #include <linux/types.h>
 #include <linux/ioctl.h>
 #include <asm/byteorder.h>
+#else
+#include "../types.h"
+#endif
+/* ANDROID_CHANGE_END */
 
 /*
  * User-space ABI bits:

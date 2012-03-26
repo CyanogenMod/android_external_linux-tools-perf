@@ -13,7 +13,11 @@
 
 #include "util/debug.h"
 
+/* ANDROID_CHANGE_BEGIN */
+#ifndef __APPLE__
 #include <sys/prctl.h>
+#endif
+/* ANDROID_CHANGE_END */
 
 #include <semaphore.h>
 /* ANDROID_CHANGE_BEGIN */
@@ -159,11 +163,17 @@ static u64			all_count;
 
 static u64 get_nsecs(void)
 {
+	/* ANDROID_CHANGE_BEGIN */
+#ifndef __APPLE__
 	struct timespec ts;
 
 	clock_gettime(CLOCK_MONOTONIC, &ts);
 
 	return ts.tv_sec * 1000000000ULL + ts.tv_nsec;
+#else
+	return 0;
+#endif
+	/* ANDROID_CHANGE_END */
 }
 
 static void burn_nsecs(u64 nsecs)
@@ -414,6 +424,8 @@ static u64 get_cpu_usage_nsec_parent(void)
 
 static int self_open_counters(void)
 {
+/* ANDROID_CHANGE_BEGIN */
+#ifndef __APPLE__
 	struct perf_event_attr attr;
 	int fd;
 
@@ -428,6 +440,10 @@ static int self_open_counters(void)
 		die("Error: sys_perf_event_open() syscall returned"
 		    "with %d (%s)\n", fd, strerror(errno));
 	return fd;
+#else
+	die("Error: sys_perf_event_open() syscall not supported on host\n");
+#endif
+/* ANDROID_CHANGE_END */
 }
 
 static u64 get_cpu_usage_nsec_self(int fd)
@@ -443,6 +459,9 @@ static u64 get_cpu_usage_nsec_self(int fd)
 
 static void *thread_func(void *ctx)
 {
+/* ANDROID_CHANGE_BEGIN */
+#ifndef __APPLE__
+/* ANDROID_CHANGE_END */
 	struct task_desc *this_task = ctx;
 	u64 cpu_usage_0, cpu_usage_1;
 	unsigned long i, ret;
@@ -479,8 +498,11 @@ again:
 	BUG_ON(ret);
 
 	goto again;
+/* ANDROID_CHANGE_BEGIN */
+#endif // __APPLE__
+/* ANDROID_CHANGE_END */
         /* ANDROID_CHANGE_BEGIN */
-#ifdef __BIONIC__
+#if defined(__BIONIC__) || defined(__APPLE__)
         return NULL;
 #endif
         /* ANDROID_CHANGE_END */

@@ -10,7 +10,7 @@
 #include "kernel.h"
 #include "compiler.h"
 #include "../asm/hweight.h"
-#if defined(__BIONIC__)
+#if defined(__BIONIC__) || defined(__APPLE__)
 #define __WORDSIZE 32
 #endif
 #endif

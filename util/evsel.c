@@ -203,6 +203,8 @@ int __perf_evsel__read(struct perf_evsel *evsel,
 static int __perf_evsel__open(struct perf_evsel *evsel, struct cpu_map *cpus,
 			      struct thread_map *threads, bool group)
 {
+/* ANDROID_CHANGE_BEGIN */
+#ifndef __APPLE__
 	int cpu, thread;
 	unsigned long flags = 0;
 	int pid = -1;
@@ -247,6 +249,10 @@ out_close:
 		thread = threads->nr;
 	} while (--cpu >= 0);
 	return -1;
+#else
+	return -1;
+#endif
+/* ANDROID_CHANGE_END */
 }
 
 static struct {

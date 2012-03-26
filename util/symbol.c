@@ -2472,7 +2472,7 @@ int symbol__init(void)
 		return 0;
 
         /* ANDROID_CHANGE_BEGIN */
-#if __BIONIC__
+#if defined(__BIONIC__) || defined(__APPLE__)
 	symbol_conf.priv_size = KERNEL_ALIGN(symbol_conf.priv_size, sizeof(u64));
 #else
 	symbol_conf.priv_size = ALIGN(symbol_conf.priv_size, sizeof(u64));

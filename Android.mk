@@ -14,7 +14,7 @@
 
 LOCAL_PATH := $(call my-dir)
 
-supported_platforms := linux-x86
+supported_platforms := linux-x86 darwin-x86
 cur_platform := $(filter $(HOST_OS)-$(HOST_ARCH),$(supported_platforms))
 
 ifdef cur_platform
@@ -23,7 +23,7 @@ ifdef cur_platform
 # host libperf
 #
 
-include $(CLEAR_VARS) 
+include $(CLEAR_VARS)
 
 libperf_src_files := \
 	util/added/rbtree.c \
@@ -84,6 +84,9 @@ libperf_src_files := \
 
 LOCAL_SRC_FILES := $(libperf_src_files)
 
+LOCAL_SRC_FILES += \
+	arch/arm/util/dwarf-regs.c
+
 LOCAL_CFLAGS := -DNO_NEWT_SUPPORT -DNO_LIBPERL -DNO_LIBPYTHON -DNO_STRLCPY -std=gnu99
 
 # temporary until bfd.h is added
@@ -101,7 +104,12 @@ LOCAL_CFLAGS += -Wno-pointer-arith
 # for __used
 LOCAL_CFLAGS += -include $(LOCAL_PATH)/util/include/linux/compiler.h
 
+LOCAL_CFLAGS += \
+	-include $(LOCAL_PATH)/host-$(HOST_OS)-fixup/AndroidFixup.h
+
 LOCAL_C_INCLUDES := external/elfutils external/elfutils/libelf external/elfutils/libdw external/elfutils/libdwfl
+
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/host-$(HOST_OS)-fixup
 
 LOCAL_MODULE := libperf
 LOCAL_MODULE_TAGS := optional
@@ -138,7 +146,7 @@ LOCAL_CFLAGS += -include external/elfutils/bionic-fixup/AndroidFixup.h
 
 LOCAL_CFLAGS += -Wno-attributes -Werror
 
-LOCAL_C_INCLUDES:=external/elfutils external/elfutils/libelf external/elfutils/libdw external/elfutils/libdwfl
+LOCAL_C_INCLUDES := external/elfutils external/elfutils/libelf external/elfutils/libdw external/elfutils/libdwfl
 
 LOCAL_MODULE := libperf
 LOCAL_MODULE_TAGS := optional
@@ -154,9 +162,8 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := perfhost
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_SRC_FILES := \
+perf_src_files := \
 	builtin-annotate.c \
-	builtin-bench.c \
 	builtin-buildid-cache.c \
 	builtin-buildid-list.c \
 	builtin-diff.c \
@@ -173,21 +180,26 @@ LOCAL_SRC_FILES := \
 	builtin-sched.c \
 	builtin-script.c \
 	builtin-stat.c \
-	builtin-test.c \
 	builtin-timechart.c \
 	builtin-top.c \
-	bench/mem-memcpy.c \
-	bench/sched-messaging.c \
-	bench/sched-pipe.c \
-	arch/x86/util/dwarf-regs.c \
 	perf.c
+
+LOCAL_SRC_FILES := $(perf_src_files)
 
 LOCAL_STATIC_LIBRARIES := libperf libdwfl libdw libebl libelf
 
-LOCAL_LDLIBS := -lpthread -lrt -ldl
+LOCAL_LDLIBS := -lpthread -ldl
+
+# for clock_gettime
+ifeq ($(HOST_OS),linux)
+LOCAL_LDLIBS += -lrt
+endif
 
 # common
 LOCAL_CFLAGS := -DNO_NEWT_SUPPORT -DNO_LIBPERL -DNO_LIBPYTHON -DNO_STRLCPY -std=gnu99
+
+LOCAL_CFLAGS += \
+	-include $(LOCAL_PATH)/host-$(HOST_OS)-fixup/AndroidFixup.h
 
 # in list.h: entry->next = LIST_POISON1;
 LOCAL_CFLAGS += -Wno-pointer-arith
@@ -204,6 +216,8 @@ LOCAL_CFLAGS += -DPERF_MAN_PATH='""'
 LOCAL_CFLAGS += -DPERF_INFO_PATH='""'
 LOCAL_CFLAGS += -DPERF_VERSION='"perf.3.0.8_android"'
 
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/host-$(HOST_OS)-fixup
+
 include $(BUILD_HOST_EXECUTABLE)
 
 #
@@ -215,33 +229,14 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := perf
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_SRC_FILES := \
-	builtin-annotate.c \
-	builtin-bench.c \
-	builtin-buildid-cache.c \
-	builtin-buildid-list.c \
-	builtin-diff.c \
-	builtin-evlist.c \
-	builtin-help.c \
-	builtin-inject.c \
-	builtin-kmem.c \
-	builtin-kvm.c \
-	builtin-list.c \
-	builtin-lock.c \
-	builtin-probe.c \
-	builtin-record.c \
-	builtin-report.c \
-	builtin-sched.c \
-	builtin-script.c \
-	builtin-stat.c \
+LOCAL_SRC_FILES := $(perf_src_files)
+
+LOCAL_SRC_FILES += \
 	builtin-test.c \
-	builtin-timechart.c \
-	builtin-top.c \
 	bench/mem-memcpy.c \
 	bench/sched-messaging.c \
 	bench/sched-pipe.c \
-	arch/arm/util/dwarf-regs.c \
-	perf.c
+	arch/arm/util/dwarf-regs.c
 
 LOCAL_STATIC_LIBRARIES := libperf libdwfl libdw libebl libelf
 

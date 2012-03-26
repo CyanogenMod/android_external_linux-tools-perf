@@ -20,7 +20,11 @@
  */
 #define _GNU_SOURCE
 #include <dirent.h>
+/* ANDROID_CHANGE_BEGIN */
+#ifndef __APPLE__
 #include <mntent.h>
+#endif
+/* ANDROID_CHANGE_END */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

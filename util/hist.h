@@ -1,7 +1,11 @@
 #ifndef __PERF_HIST_H
 #define __PERF_HIST_H
 
+/* ANDROID_CHANGE_BEGIN */
+#ifndef __APPLE__
 #include <linux/types.h>
+#endif
+/* ANDROID_CHANGE_END */
 #include "callchain.h"
 
 extern struct callchain_param callchain_param;

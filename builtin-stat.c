@@ -56,7 +56,11 @@
 #include "util/thread.h"
 #include "util/thread_map.h"
 
+/* ANDROID_CHANGE_BEGIN */
+#ifndef __APPLE__
 #include <sys/prctl.h>
+#endif
+/* ANDROID_CHANGE_END */
 #include <math.h>
 #include <locale.h>
 
@@ -1135,6 +1139,8 @@ static int add_default_attributes(void)
 
 int cmd_stat(int argc, const char **argv, const char *prefix __used)
 {
+	/* ANDROID_CHANGE_BEGIN */
+#ifndef __APPLE__
 	struct perf_evsel *pos;
 	int status = -ENOMEM;
 
@@ -1239,4 +1245,8 @@ out_free_fd:
 out:
 	perf_evlist__delete(evsel_list);
 	return status;
+#else
+	return -1;
+#endif
+	/* ANDROID_CHANGE_END */
 }

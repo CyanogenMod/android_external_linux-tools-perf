@@ -11,7 +11,11 @@
 #include "build-id.h"
 #include "event.h"
 #include "symbol.h"
-#include <linux/kernel.h>
+/* ANDROID_CHANGE_BEGIN */
+#ifdef __APPLE__
+#include "include/linux/kernel.h"
+#endif
+/* ANDROID_CHANGE_END */
 #include "debug.h"
 
 static int build_id__mark_dso_hit(union perf_event *event,

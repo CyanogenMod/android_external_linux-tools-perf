@@ -85,6 +85,8 @@ const char *debugfs_find_mountpoint(void)
 
 int debugfs_valid_mountpoint(const char *debugfs)
 {
+	/* ANDROID_CHANGE_BEGIN */
+#ifndef __APPLE__
 	struct statfs st_fs;
 
 	if (statfs(debugfs, &st_fs) < 0)
@@ -92,6 +94,8 @@ int debugfs_valid_mountpoint(const char *debugfs)
 	else if (st_fs.f_type != (long) DEBUGFS_MAGIC)
 		return -ENOENT;
 
+#endif
+	/* ANDROID_CHANGE_END */
 	return 0;
 }
 
@@ -110,6 +114,8 @@ int debugfs_valid_entry(const char *path)
 
 char *debugfs_mount(const char *mountpoint)
 {
+	/* ANDROID_CHANGE_BEGIN */
+#ifndef __APPLE__
 	/* see if it's already mounted */
 	if (debugfs_find_mountpoint()) {
 		debugfs_premounted = 1;
@@ -133,6 +139,10 @@ char *debugfs_mount(const char *mountpoint)
 	debugfs_found = 1;
 
 	return debugfs_mountpoint;
+#else
+	return "perfhost";
+#endif
+	/* ANDROID_CHANGE_END */
 }
 
 /* umount the debugfs */

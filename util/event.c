@@ -1,4 +1,10 @@
+/* ANDROID_CHANGE_BEGIN */
+#ifdef __APPLE__
+#include "include/linux/types.h"
+#else
 #include <linux/types.h>
+#endif
+/* ANDROID_CHANGE_END */
 #include "event.h"
 #include "debug.h"
 #include "session.h"
@@ -92,7 +98,7 @@ out_race:
 
 	event->comm.header.type = PERF_RECORD_COMM;
         /* ANDROID_CHANGE_BEGIN */
-#ifdef __BIONIC__
+#if defined(__BIONIC__) || defined(__APPLE__)
 	size = KERNEL_ALIGN(size, sizeof(u64));
 #else
 	size = ALIGN(size, sizeof(u64));
@@ -191,7 +197,7 @@ static int perf_event__synthesize_mmap_events(union perf_event *event,
 			execname[size - 1] = '\0'; /* Remove \n */
 			memcpy(event->mmap.filename, execname, size);
                         /* ANDROID_CHANGE_BEGIN */
-#ifdef __BIONIC__
+#if defined(__BIONIC__) || defined(__APPLE__)
 			size = KERNEL_ALIGN(size, sizeof(u64));
 #else
 			size = ALIGN(size, sizeof(u64));
@@ -247,7 +253,7 @@ int perf_event__synthesize_modules(perf_event__handler_t process,
 			continue;
 
                 /* ANDROID_CHANGE_BEGIN */
-#ifdef __BIONIC__
+#if defined(__BIONIC__) || defined(__APPLE__)
 		size = KERNEL_ALIGN(pos->dso->long_name_len + 1, sizeof(u64));
 #else
 		size = ALIGN(pos->dso->long_name_len + 1, sizeof(u64));
@@ -428,7 +434,7 @@ int perf_event__synthesize_kernel_mmap(perf_event__handler_t process,
 	size = snprintf(event->mmap.filename, sizeof(event->mmap.filename),
 			"%s%s", mmap_name, symbol_name) + 1;
         /* ANDROID_CHANGE_BEGIN */
-#ifdef __BIONIC__
+#if defined(__BIONIC__) || defined(__APPLE__)
 	size = KERNEL_ALIGN(size, sizeof(u64));
 #else
 	size = ALIGN(size, sizeof(u64));
