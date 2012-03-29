@@ -46,6 +46,10 @@ static void wait_for_pager_signal(int signo)
 
 void setup_pager(void)
 {
+        /* ANDROID_CHANGE_BEGIN */
+#ifdef __BIONIC__
+        return;
+#else
 	const char *pager = getenv("PERF_PAGER");
 
 	if (!isatty(1))
@@ -82,6 +86,8 @@ void setup_pager(void)
 	/* this makes sure that the parent terminates after the pager */
 	sigchain_push_common(wait_for_pager_signal);
 	atexit(wait_for_pager);
+#endif
+        /* ANDROID_CHANGE_END */
 }
 
 int pager_in_use(void)
