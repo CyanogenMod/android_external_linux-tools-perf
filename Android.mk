@@ -112,7 +112,7 @@ LOCAL_C_INCLUDES := external/elfutils external/elfutils/libelf external/elfutils
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/host-$(HOST_OS)-fixup
 
 LOCAL_MODULE := libperf
-LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_TAGS := eng
 
 include $(BUILD_HOST_STATIC_LIBRARY)
 
@@ -149,7 +149,7 @@ LOCAL_CFLAGS += -Wno-attributes -Werror
 LOCAL_C_INCLUDES := external/elfutils external/elfutils/libelf external/elfutils/libdw external/elfutils/libdwfl
 
 LOCAL_MODULE := libperf
-LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_TAGS := eng
 
 include $(BUILD_STATIC_LIBRARY)
 
@@ -160,7 +160,7 @@ include $(BUILD_STATIC_LIBRARY)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := perfhost
-LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_TAGS := eng
 
 perf_src_files := \
 	builtin-annotate.c \
@@ -227,7 +227,7 @@ include $(BUILD_HOST_EXECUTABLE)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := perf
-LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_TAGS := eng
 
 LOCAL_SRC_FILES := $(perf_src_files)
 
