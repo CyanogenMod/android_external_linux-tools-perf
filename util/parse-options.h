@@ -6,6 +6,10 @@
 #include "include/linux/kernel.h"
 #else
 #include <linux/kernel.h>
+/* BUILD_BUG_ON_ZERO is missing in new glibc headers */
+#ifndef BUILD_BUG_ON_ZERO
+#define BUILD_BUG_ON_ZERO(e) (sizeof(struct { int:-!!(e); }))
+#endif
 #endif
 /* ANDROID_CHANGE_END */
 #include <stdbool.h>
