@@ -2,6 +2,7 @@
 #ifdef __APPLE__
 #include "include/linux/types.h"
 #else
+#include <features.h>  // Suppress kernel-name space pollution in <linux/types.h> below
 #include <linux/types.h>
 #endif
 /* ANDROID_CHANGE_END */

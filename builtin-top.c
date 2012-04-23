@@ -71,6 +71,7 @@
 
 /* ANDROID_CHANGE_BEGIN */
 #ifndef __APPLE__
+#include <features.h>  // Suppress kernel-name space pollution in <linux/types.h> below
 #include <linux/unistd.h>
 #include <linux/types.h>
 #else
