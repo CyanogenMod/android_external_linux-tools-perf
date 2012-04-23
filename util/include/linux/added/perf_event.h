@@ -16,7 +16,8 @@
 
 /* ANDROID_CHANGE_BEGIN */
 #ifndef __APPLE__
-#include <features.h>  // Suppress kernel-name space pollution in <linux/types.h> below
+/* Suppress kernel-name space pollution in <linux/types.h> below */
+#include <features.h>
 #include <linux/types.h>
 #include <linux/ioctl.h>
 #include <asm/byteorder.h>
