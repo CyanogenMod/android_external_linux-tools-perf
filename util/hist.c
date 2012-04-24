@@ -969,7 +969,13 @@ int hist_entry__inc_addr_samples(struct hist_entry *he, int evidx, u64 ip)
 
 int hist_entry__annotate(struct hist_entry *he, size_t privsize)
 {
+    /* ANDROID_CHANGE_BEGIN */
+#if 0
 	return symbol__annotate(he->ms.sym, he->ms.map, privsize);
+#else
+	return symbol__annotate(he->ms.sym, he->ms.map, privsize, false);
+#endif
+    /* ANDROID_CHANGE_END */
 }
 
 void hists__inc_nr_events(struct hists *self, u32 type)

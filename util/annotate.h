@@ -85,7 +85,14 @@ int symbol__inc_addr_samples(struct symbol *sym, struct map *map,
 int symbol__alloc_hist(struct symbol *sym, int nevents);
 void symbol__annotate_zero_histograms(struct symbol *sym);
 
+/* ANDROID_CHANGE_BEGIN */
+#if 0
 int symbol__annotate(struct symbol *sym, struct map *map, size_t privsize);
+#else
+int symbol__annotate(struct symbol *sym, struct map *map, size_t privsize,
+                     bool print_lines);
+#endif
+/* ANDROID_CHANGE_END */
 int symbol__annotate_init(struct map *map __used, struct symbol *sym);
 int symbol__annotate_printf(struct symbol *sym, struct map *map, int evidx,
 			    bool full_paths, int min_pcnt, int max_lines,

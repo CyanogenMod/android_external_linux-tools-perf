@@ -256,7 +256,14 @@ static int symbol__parse_objdump_line(struct symbol *sym, struct map *map,
 	return 0;
 }
 
+/* ANDROID_CHANGE_BEGIN */
+#if 0
 int symbol__annotate(struct symbol *sym, struct map *map, size_t privsize)
+#else
+int symbol__annotate(struct symbol *sym, struct map *map, size_t privsize,
+                     bool print_lines)
+#endif
+/* ANDROID_CHANGE_END */
 {
 	struct dso *dso = map->dso;
 	char *filename = dso__build_id_filename(dso, NULL, 0);
@@ -322,7 +329,7 @@ fallback:
 	pr_debug("annotating [%p] %30s : [%p] %30s\n",
 		 dso, dso->long_name, sym, sym->name);
 
-        /* ANDROID_CHANGE_BEGIN */
+    /* ANDROID_CHANGE_BEGIN */
 #if 0
 	snprintf(command, sizeof(command),
 		 "objdump --start-address=0x%016" PRIx64
@@ -333,12 +340,13 @@ fallback:
 #else
 	snprintf(command, sizeof(command),
 		 "arm-eabi-objdump --start-address=0x%016" PRIx64
-		 " --stop-address=0x%016" PRIx64 " -d -C %s|grep -v %s|expand",
+		 " --stop-address=0x%016" PRIx64 " -d%c -C %s|grep -v %s|expand",
 		 map__rip_2objdump(map, sym->start),
 		 map__rip_2objdump(map, sym->end),
+         print_lines ? 'S' : ' ',
 		 symfs_filename, filename);
 #endif
-        /* ANDROID_CHANGE_END */
+    /* ANDROID_CHANGE_END */
 
 	pr_debug("Executing: %s\n", command);
 
@@ -409,7 +417,14 @@ static int symbol__get_source_line(struct symbol *sym, struct map *map,
 	if (!notes->src->lines)
 		return -1;
 
+    /* ANDORID_CHANGE_BEGIN */
+#if 0
 	start = map->unmap_ip(map, sym->start);
+#else
+    /* Use relative start address */
+    start = sym->start;
+#endif
+    /* ANDORID_CHANGE_END */
 
 	for (i = 0; i < len; i++) {
 		char *path = NULL;
@@ -422,7 +437,8 @@ static int symbol__get_source_line(struct symbol *sym, struct map *map,
 			continue;
 
 		offset = start + i;
-		sprintf(cmd, "addr2line -e %s %016" PRIx64, filename, offset);
+		sprintf(cmd, "arm-eabi-addr2line -e %s%s %016" PRIx64, symbol_conf.symfs,
+                filename, offset);
 		fp = popen(cmd, "r");
 		if (!fp)
 			continue;
@@ -594,8 +610,15 @@ int symbol__tty_annotate(struct symbol *sym, struct map *map, int evidx,
 	struct rb_root source_line = RB_ROOT;
 	u64 len;
 
+    /* ANDROID_CHANGE_BEGIN */
+#if 0
 	if (symbol__annotate(sym, map, 0) < 0)
 		return -1;
+#else
+	if (symbol__annotate(sym, map, 0, print_lines) < 0)
+		return -1;
+#endif
+    /* ANDROID_CHANGE_END */
 
 	len = sym->end - sym->start;
 

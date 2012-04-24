@@ -193,7 +193,13 @@ static int parse_source(struct sym_entry *syme)
 		return err;
 	}
 
+    /* ANDROID_CHANGE_BEGIN */
+#if 0
 	err = symbol__annotate(sym, syme->map, 0);
+#else
+	err = symbol__annotate(sym, syme->map, 0, false);
+#endif
+    /* ANDROID_CHANGE_END */
 	if (err == 0) {
 out_assign:
 		top.sym_filter_entry = syme;
