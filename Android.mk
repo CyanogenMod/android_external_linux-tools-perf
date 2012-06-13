@@ -129,7 +129,7 @@ include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := $(libperf_src_files)
 
-LOCAL_CFLAGS := -DNO_NEWT_SUPPORT -DNO_LIBPERL -DNO_LIBPYTHON -DNO_STRLCPY -std=gnu99
+LOCAL_CFLAGS := -DNO_NEWT_SUPPORT -DNO_LIBPERL -DNO_LIBPYTHON -std=gnu99
 
 # temporary until bfd.h is added
 LOCAL_CFLAGS += -DNO_DEMANGLE
@@ -248,7 +248,7 @@ LOCAL_STATIC_LIBRARIES := libperf libdwfl libdw libebl libelf
 LOCAL_SHARED_LIBRARIES := libdl
 
 # common
-LOCAL_CFLAGS := -DNO_NEWT_SUPPORT -DNO_LIBPERL -DNO_LIBPYTHON -DNO_STRLCPY -std=gnu99
+LOCAL_CFLAGS := -DNO_NEWT_SUPPORT -DNO_LIBPERL -DNO_LIBPYTHON -std=gnu99
 
 # in list.h: entry->next = LIST_POISON1;
 LOCAL_CFLAGS += -Wno-pointer-arith
