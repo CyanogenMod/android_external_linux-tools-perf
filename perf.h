@@ -18,7 +18,13 @@ void get_term_dimensions(struct winsize *ws);
 #endif
 
 #if defined(__x86_64__)
+/* ANDROID_CHANGE_BEGIN */
+#if 0
 #include "../../arch/x86/include/asm/unistd.h"
+#elif !defined(__APPLE__)
+#include <asm/unistd.h>
+#endif
+/* ANDROID_CHANGE_END */
 #define rmb()		asm volatile("lfence" ::: "memory")
 #define cpu_relax()	asm volatile("rep; nop" ::: "memory");
 #endif
