@@ -86,7 +86,13 @@ void get_term_dimensions(struct winsize *ws);
 #endif
 
 #ifdef __mips__
+/* ANDROID_CHANGE_BEGIN */
+#if 0
 #include "../../arch/mips/include/asm/unistd.h"
+#elif !defined(__APPLE__)
+#include <asm/unistd.h>
+#endif
+/* ANDROID_CHANGE_END */
 #define rmb()		asm volatile(					\
 				".set	mips2\n\t"			\
 				"sync\n\t"				\
