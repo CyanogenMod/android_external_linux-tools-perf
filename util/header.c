@@ -78,7 +78,7 @@ static const char const __perf_magic[9] __attribute__ ((aligned (8))) =
 #endif
 /* ANDROID_CHANGE_END */
 
-#define PERF_MAGIC	(*(u64 *)__perf_magic)
+#define PERF_MAGIC 0x454c494646524550 /*(*(u64 *)__perf_magic)*/
 
 
 struct perf_file_attr {
