@@ -2258,7 +2258,7 @@ static u64 machine__get_kernel_start_addr(struct machine *machine)
 {
 	const char *filename;
 	char path[PATH_MAX];
-	struct process_args args = {0};
+	struct process_args args = {0LL};
 
 	if (machine__is_host(machine)) {
 		filename = "/proc/kallsyms";
