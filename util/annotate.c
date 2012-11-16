@@ -339,7 +339,7 @@ fallback:
 		 symfs_filename, filename);
 #else
 	snprintf(command, sizeof(command),
-		 "arm-eabi-objdump --start-address=0x%016" PRIx64
+		 "arm-linux-androideabi-objdump --start-address=0x%016" PRIx64
 		 " --stop-address=0x%016" PRIx64 " -d%c -C %s|grep -v %s|expand",
 		 map__rip_2objdump(map, sym->start),
 		 map__rip_2objdump(map, sym->end),
@@ -437,7 +437,7 @@ static int symbol__get_source_line(struct symbol *sym, struct map *map,
 			continue;
 
 		offset = start + i;
-		sprintf(cmd, "arm-eabi-addr2line -e %s%s %016" PRIx64, symbol_conf.symfs,
+		sprintf(cmd, "arm-linux-androideabi-addr2line -e %s%s %016" PRIx64, symbol_conf.symfs,
                 filename, offset);
 		fp = popen(cmd, "r");
 		if (!fp)
