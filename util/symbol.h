@@ -36,8 +36,21 @@ static inline char *bfd_demangle(void __used *v, const char __used *c,
 {
 	return NULL;
 }
+/* ANDROID_CHANGE_BEGIN */
+#else
+#ifdef HAVE_ANDROID_DEMANGLE
+/* in external/gcc-demangle */
+extern char *__cxa_demangle (const char *, char *, size_t *, int *);
+
+static inline char *bfd_demangle(void __used *v, const char __used *c,
+                int __used i)
+{
+    return __cxa_demangle(c, NULL, NULL, NULL);
+}
+/* ANDROID_CHANGE_END */
 #else
 #include <bfd.h>
+#endif
 #endif
 #endif
 

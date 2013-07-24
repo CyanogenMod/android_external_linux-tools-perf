@@ -98,8 +98,7 @@ ifneq ($(mac_sdk_version),10.9)
 LOCAL_CFLAGS += -DNO_STRLCPY
 endif
 
-# temporary until bfd.h is added
-LOCAL_CFLAGS += -DNO_DEMANGLE
+LOCAL_CFLAGS += -DHAVE_ANDROID_DEMANGLE
 LOCAL_CFLAGS += -DDWARF_SUPPORT
 
 # various macros
@@ -134,8 +133,7 @@ LOCAL_SRC_FILES := $(libperf_src_files)
 
 LOCAL_CFLAGS := -DNO_NEWT_SUPPORT -DNO_LIBPERL -DNO_LIBPYTHON -std=gnu99
 
-# temporary until bfd.h is added
-LOCAL_CFLAGS += -DNO_DEMANGLE
+LOCAL_CFLAGS += -DHAVE_ANDROID_DEMANGLE
 LOCAL_CFLAGS += -DDWARF_SUPPORT
 
 # various macros
@@ -192,7 +190,7 @@ perf_src_files := \
 
 LOCAL_SRC_FILES := $(perf_src_files)
 
-LOCAL_STATIC_LIBRARIES := libperf libdwfl libdw libebl libelf
+LOCAL_STATIC_LIBRARIES := libperf libdwfl libdw libebl libelf libgccdemangle
 
 LOCAL_LDLIBS := -lpthread -ldl
 
@@ -217,8 +215,7 @@ LOCAL_CFLAGS += -Wno-pointer-arith
 # for __used
 LOCAL_CFLAGS += -include $(LOCAL_PATH)/util/include/linux/compiler.h
 
-# temporary until bfd.h is added
-LOCAL_CFLAGS += -DNO_DEMANGLE
+LOCAL_CFLAGS += -DHAVE_ANDROID_DEMANGLE
 
 # unique
 LOCAL_CFLAGS += -DPERF_HTML_PATH='""'
@@ -248,7 +245,7 @@ LOCAL_SRC_FILES += \
 	bench/sched-pipe.c \
 	arch/arm/util/dwarf-regs.c
 
-LOCAL_STATIC_LIBRARIES := libperf libdwfl libdw libebl libelf
+LOCAL_STATIC_LIBRARIES := libperf libdwfl libdw libebl libelf libgccdemangle
 
 LOCAL_SHARED_LIBRARIES := libdl
 
@@ -264,8 +261,7 @@ LOCAL_CFLAGS += -include $(LOCAL_PATH)/util/include/linux/compiler.h
 # for various GNU extensions
 LOCAL_CFLAGS += -include external/elfutils/bionic-fixup/AndroidFixup.h
 
-# temporary until bfd.h is added
-LOCAL_CFLAGS += -DNO_DEMANGLE
+LOCAL_CFLAGS += -DHAVE_ANDROID_DEMANGLE
 
 # unique
 LOCAL_CFLAGS += -DPERF_HTML_PATH='""'
