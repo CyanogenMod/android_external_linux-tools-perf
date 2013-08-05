@@ -146,7 +146,7 @@ LOCAL_CFLAGS += -include $(LOCAL_PATH)/util/include/linux/compiler.h
 # for various GNU extensions
 LOCAL_CFLAGS += -include external/elfutils/bionic-fixup/AndroidFixup.h
 
-LOCAL_CFLAGS += -Wno-attributes -Werror
+LOCAL_CFLAGS += -Wno-attributes -Werror -Wno-error=unused-parameter
 
 LOCAL_C_INCLUDES := external/elfutils external/elfutils/libelf external/elfutils/libdw external/elfutils/libdwfl
 
@@ -261,7 +261,7 @@ LOCAL_CFLAGS += -DPERF_MAN_PATH='""'
 LOCAL_CFLAGS += -DPERF_INFO_PATH='""'
 LOCAL_CFLAGS += -DPERF_VERSION='"perf.3.0.8_android"'
 
-LOCAL_CFLAGS += -Wno-attributes -Werror
+LOCAL_CFLAGS += -Wno-attributes -Werror -Wno-error=unused-parameter
 
 include $(BUILD_EXECUTABLE)
 
