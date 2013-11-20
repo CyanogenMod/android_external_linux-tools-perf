@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stddef.h>
 #include <dwarf-regs.h>
 
