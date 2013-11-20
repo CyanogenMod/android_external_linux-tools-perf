@@ -47,7 +47,6 @@ libperf_src_files := \
 	util/cgroup.c \
 	util/color.c \
 	util/config.c \
-	util/config.c \
 	util/cpumap.c \
 	util/ctype.c \
 	util/debug.c \
