@@ -114,8 +114,8 @@ libperf_src_files := \
 common_perf_headers := $(LOCAL_PATH)/../lib $(LOCAL_PATH)/util/include \
 	$(LOCAL_PATH)/util $(LOCAL_PATH)/../../include/uapi
 
-common_elfutil_headers := external/elfutils external/elfutils/libelf \
-	external/elfutils/libdw external/elfutils/libdwfl
+common_elfutil_headers := external/elfutils external/elfutils/0.153/libelf \
+	external/elfutils/0.153/libdw external/elfutils/0.153/libdwfl
 
 common_compiler_flags := -Wno-pointer-arith -Wno-attributes -Wno-error \
 	-Wno-unused-parameter -Wno-error=return-type -std=gnu99
@@ -126,7 +126,7 @@ common_disabled_macros := -DNO_NEWT_SUPPORT -DNO_LIBPERL -DNO_LIBPYTHON \
 common_predefined_macros := -DDWARF_SUPPORT -DPYTHON='""' -DBINDIR='""' \
 	-DETC_PERFCONFIG='""' -DPREFIX='""' -DPERF_EXEC_PATH='""' \
 	-DPERF_HTML_PATH='""' -DPERF_MAN_PATH='""' -DPERF_INFO_PATH='""' \
-	-DPERF_VERSION='"perf.3.12_android"'
+	-DPERF_VERSION='"perf.3.12_android"' -DHAVE_ELF_GETPHDRNUM
 
 include $(CLEAR_VARS)
 
