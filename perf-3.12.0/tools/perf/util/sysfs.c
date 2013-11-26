@@ -12,12 +12,14 @@ char sysfs_mountpoint[PATH_MAX + 1];
 
 static int sysfs_valid_mountpoint(const char *sysfs)
 {
+#ifndef __APPLE__
 	struct statfs st_fs;
 
 	if (statfs(sysfs, &st_fs) < 0)
 		return -ENOENT;
 	else if (st_fs.f_type != (long) SYSFS_MAGIC)
 		return -ENOENT;
+#endif
 
 	return 0;
 }

@@ -76,6 +76,9 @@ int debugfs_valid_mountpoint(const char *debugfs)
 /* mount the debugfs somewhere if it's not mounted */
 char *debugfs_mount(const char *mountpoint)
 {
+#ifdef __APPLE__
+	goto out;
+#else
 	/* see if it's already mounted */
 	if (debugfs_find_mountpoint())
 		goto out;
@@ -95,6 +98,7 @@ char *debugfs_mount(const char *mountpoint)
 	/* save the mountpoint */
 	debugfs_found = true;
 	strncpy(debugfs_mountpoint, mountpoint, sizeof(debugfs_mountpoint));
+#endif
 out:
 	return debugfs_mountpoint;
 }

@@ -345,6 +345,7 @@ out:
 
 static int __cmd_record(struct perf_record *rec, int argc, const char **argv)
 {
+#ifndef __APPLE__
 	struct stat st;
 	int flags;
 	int err, output, feat;
@@ -598,6 +599,9 @@ static int __cmd_record(struct perf_record *rec, int argc, const char **argv)
 out_delete_session:
 	perf_session__delete(session);
 	return err;
+#else
+	return -1;
+#endif
 }
 
 #define BRANCH_OPT(n, m) \
