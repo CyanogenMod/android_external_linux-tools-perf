@@ -90,6 +90,7 @@ libperf_src_files := \
 	util/strlist.c \
 	util/svghelper.c \
 	util/symbol.c \
+	util/symbol-elf.c \
 	util/sysfs.c \
 	util/target.c \
 	util/thread.c \
@@ -126,15 +127,12 @@ common_disabled_macros := -DNO_NEWT_SUPPORT -DNO_LIBPERL -DNO_LIBPYTHON \
 common_predefined_macros := -DDWARF_SUPPORT -DPYTHON='""' -DBINDIR='""' \
 	-DETC_PERFCONFIG='""' -DPREFIX='""' -DPERF_EXEC_PATH='""' \
 	-DPERF_HTML_PATH='""' -DPERF_MAN_PATH='""' -DPERF_INFO_PATH='""' \
-	-DPERF_VERSION='"perf.3.12_android"' -DHAVE_ELF_GETPHDRNUM
+	-DPERF_VERSION='"perf.3.12_android"' -DHAVE_ELF_GETPHDRNUM \
+	-DLIBELF_SUPPORT -DLIBELF_MMAP
 
 include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := $(libperf_src_files)
-
-# TODO on-device symbolization is having issues as samples are attributed to
-# wrong DSOs
-LOCAL_SRC_FILES += util/symbol-minimal.c
 
 # disable modules not used by Android
 LOCAL_CFLAGS := $(common_disabled_macros)
@@ -159,17 +157,11 @@ include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := $(libperf_src_files)
 
-# perform symbolization on the host
-LOCAL_SRC_FILES += util/symbol-elf.c
-
 # disable modules not used by Android
 LOCAL_CFLAGS := $(common_disabled_macros)
 
 # predefined macros
 LOCAL_CFLAGS += $(common_predefined_macros)
-
-# needed by symbolization
-LOCAL_CFLAGS += -DLIBELF_SUPPORT
 
 LOCAL_CFLAGS += $(common_compiler_flags)
 
