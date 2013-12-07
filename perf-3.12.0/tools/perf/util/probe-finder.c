@@ -147,7 +147,13 @@ error:
 	return -ENOENT;
 }
 
-#if _ELFUTILS_PREREQ(0, 148)
+/*
+ * ANDROID LOCAL PATCH
+ * Bionic doesn't have stdio_ext.h which is used by dwfl_linux_kernel_find_elf.
+ * So we just disable the new feature here even though we are pairing perf with
+ * elfutils 0.153 now.
+ */
+#if _ELFUTILS_PREREQ(0, 148) && 0
 /* This method is buggy if elfutils is older than 0.148 */
 static int __linux_kernel_find_elf(Dwfl_Module *mod,
 				   void **userdata,
