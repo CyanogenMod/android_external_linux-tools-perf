@@ -131,10 +131,15 @@
 
 static inline unsigned long long rdclock(void)
 {
+#ifdef __APPLE__
+	perror("no clock_gettime");
+	return 0;
+#else
 	struct timespec ts;
 
 	clock_gettime(CLOCK_MONOTONIC, &ts);
 	return ts.tv_sec * 1000000000ULL + ts.tv_nsec;
+#endif
 }
 
 /*
