@@ -18,7 +18,7 @@ ifeq ($(TARGET_PRODUCT),sdk)
 supported_platforms := none
 else
 # TODO Clang is having issues with elfutils - only compile on linux-x86 for now
-supported_platforms := linux-x86
+supported_platforms := linux-x86 darwin-x86
 endif
 
 cur_platform := $(filter $(HOST_OS)-$(HOST_ARCH),$(supported_platforms))
@@ -165,7 +165,12 @@ LOCAL_CFLAGS += $(common_predefined_macros)
 
 LOCAL_CFLAGS += $(common_compiler_flags)
 
+# mainly for darwin
+LOCAL_CFLAGS += -include $(LOCAL_PATH)/host-$(HOST_OS)-fixup/AndroidFixup.h
+
 LOCAL_C_INCLUDES := $(common_perf_headers) $(common_elfutil_headers)
+
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/host-$(HOST_OS)-fixup
 
 LOCAL_MODULE := libperf
 
@@ -191,11 +196,11 @@ perf_src_files := \
 	builtin-mem.c \
 	builtin-probe.c \
 	builtin-record.c \
+	builtin-report.c \
 	builtin-sched.c \
 	builtin-script.c \
 	builtin-stat.c \
 	builtin-timechart.c \
-	builtin-report.c \
 	builtin-top.c
 
 include $(CLEAR_VARS)
@@ -239,15 +244,26 @@ LOCAL_CFLAGS := $(common_disabled_macros)
 # predefined macros
 LOCAL_CFLAGS += $(common_predefined_macros)
 
-# available in host libc
+# available on linux-x86 but not darwin-x86
+ifeq ($(strip $(HOST_OS)),linux)
 LOCAL_CFLAGS += -DHAVE_ON_EXIT
+endif
 
 LOCAL_CFLAGS += $(common_compiler_flags)
 
+# mainly for darwin
+LOCAL_CFLAGS += -include $(LOCAL_PATH)/host-$(HOST_OS)-fixup/AndroidFixup.h
+
 LOCAL_C_INCLUDES := $(common_perf_headers) $(common_elfutil_headers)
 
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/host-$(HOST_OS)-fixup
+
 # for pthread_* and clock_gettime
-LOCAL_LDLIBS := -lpthread -lrt -ldl
+LOCAL_LDLIBS := -lpthread -ldl
+
+ifeq ($(strip $(HOST_OS)),linux)
+LOCAL_LDLIBS += -lrt
+endif
 
 LOCAL_MODULE := perfhost
 

@@ -19,7 +19,11 @@
 #include "util.h"
 #include "callchain.h"
 
+#ifdef __APPLE__
+struct callchain_cursor callchain_cursor;
+#else
 __thread struct callchain_cursor callchain_cursor;
+#endif
 
 #define chain_for_each_child(child, parent)	\
 	list_for_each_entry(child, &parent->children, siblings)
