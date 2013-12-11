@@ -403,10 +403,6 @@ static void dso__set_basename(struct dso *dso)
 	if (!base)
 		return;
 
-	if (dso->sname_alloc)
-		free((char *)dso->short_name);
-	else
-		dso->sname_alloc = 1;
 	/*
 	 * basename may modify content, so we must pass
 	 * a copy. Moreover basename may return pointer to internal
