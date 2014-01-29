@@ -25,12 +25,19 @@ cur_platform := $(filter $(HOST_OS)-$(HOST_ARCH),$(supported_platforms))
 
 ifdef cur_platform
 
+perf_arch := $(TARGET_ARCH)
+# HACK: use arm on arm64 until perf has arm64 support
+ifeq ($(TARGET_ARCH),arm64)
+$(warning TODOArm64: add arm64 support to perf)
+perf_arch := arm
+endif
+
 #
 # target libperf
 #
 libperf_src_files := \
 	arch/common.c \
-	arch/$(TARGET_ARCH)/util/dwarf-regs.c \
+	arch/$(perf_arch)/util/dwarf-regs.c \
 	tests/attr.c \
 	ui/helpline.c \
 	ui/hist.c \
