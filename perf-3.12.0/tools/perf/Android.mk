@@ -17,7 +17,6 @@ LOCAL_PATH := $(call my-dir)
 ifeq ($(TARGET_PRODUCT),sdk)
 supported_platforms := none
 else
-# TODO Clang is having issues with elfutils - only compile on linux-x86 for now
 supported_platforms := linux-x86 darwin-x86
 endif
 
@@ -25,19 +24,12 @@ cur_platform := $(filter $(HOST_OS)-$(HOST_ARCH),$(supported_platforms))
 
 ifdef cur_platform
 
-perf_arch := $(TARGET_ARCH)
-# HACK: use arm on arm64 until perf has arm64 support
-ifeq ($(TARGET_ARCH),arm64)
-$(warning TODOArm64: add arm64 support to perf)
-perf_arch := arm
-endif
-
 #
 # target libperf
 #
 libperf_src_files := \
 	arch/common.c \
-	arch/$(perf_arch)/util/dwarf-regs.c \
+	arch/$(TARGET_ARCH)/util/dwarf-regs.c \
 	tests/attr.c \
 	ui/helpline.c \
 	ui/hist.c \
