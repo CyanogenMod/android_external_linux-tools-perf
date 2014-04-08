@@ -318,11 +318,7 @@ static void handle_internal_command(int argc, const char **argv)
 		{ "list",	cmd_list,	0 },
 		{ "record",	cmd_record,	0 },
 		{ "report",	cmd_report,	0 },
-		/* ANDROID_CHANGE_BEGIN */
-#if 0
 		{ "bench",	cmd_bench,	0 },
-#endif
-		/* ANDROID_CHANGE_END */
 		{ "stat",	cmd_stat,	0 },
 		{ "timechart",	cmd_timechart,	0 },
 		{ "top",	cmd_top,	0 },
@@ -334,11 +330,7 @@ static void handle_internal_command(int argc, const char **argv)
 		{ "kmem",	cmd_kmem,	0 },
 		{ "lock",	cmd_lock,	0 },
 		{ "kvm",	cmd_kvm,	0 },
-		/* ANDROID_CHANGE_BEGIN */
-#if 0
 		{ "test",	cmd_test,	0 },
-#endif
-		/* ANDROID_CHANGE_END */
 		{ "inject",	cmd_inject,	0 },
 	};
 	unsigned int i;

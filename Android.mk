@@ -168,6 +168,7 @@ LOCAL_MODULE := perfhost
 
 perf_src_files := \
 	builtin-annotate.c \
+	builtin-bench.c \
 	builtin-buildid-cache.c \
 	builtin-buildid-list.c \
 	builtin-diff.c \
