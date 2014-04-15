@@ -29,6 +29,10 @@ ifeq ($(TARGET_ARCH), x86_64)
 perf_arch := x86
 endif
 
+ifeq ($(TARGET_ARCH), mips64)
+perf_arch := mips
+endif
+
 #
 # target libperf
 #
