@@ -17,10 +17,10 @@ LOCAL_PATH := $(call my-dir)
 ifeq ($(TARGET_PRODUCT),sdk)
 supported_platforms := none
 else
-supported_platforms := linux-x86 darwin-x86
+supported_platforms := linux darwin
 endif
 
-cur_platform := $(filter $(HOST_OS)-$(HOST_ARCH),$(supported_platforms))
+cur_platform := $(filter $(HOST_OS),$(supported_platforms))
 
 ifdef cur_platform
 
