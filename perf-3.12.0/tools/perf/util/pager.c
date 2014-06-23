@@ -20,8 +20,6 @@ static void pager_preexec(void)
 	FD_ZERO(&in);
 	FD_SET(0, &in);
 	select(1, &in, NULL, &in, NULL);
-
-	setenv("LESS", "FRSX", 0);
 }
 
 static const char *pager_argv[] = { "sh", "-c", NULL, NULL };
@@ -62,7 +60,7 @@ void setup_pager(void)
 			pager = "/usr/bin/pager";
 	}
 	if (!pager)
-		pager = "less";
+		pager = "more";
 	else if (!*pager || !strcmp(pager, "cat"))
 		return;
 
