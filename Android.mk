@@ -14,7 +14,4 @@
 
 LOCAL_PATH := $(call my-dir)
 
-# TODO: current version of perf doesn't support arm64 yet
-ifneq ($(TARGET_ARCH),arm64)
 include $(LOCAL_PATH)/perf-3.12.0/tools/perf/Android.mk
-endif
