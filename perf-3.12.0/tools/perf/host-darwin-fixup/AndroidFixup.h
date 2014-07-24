@@ -19,6 +19,8 @@
 
 #include <unistd.h>
 
+#include <stdio.h>
+
 typedef __uint8_t  __u8;
 typedef __uint16_t __u16;
 typedef __uint32_t __u32;
