@@ -127,7 +127,8 @@ common_elfutil_headers := external/elfutils external/elfutils/0.153/libelf \
 	external/elfutils/0.153/libdw external/elfutils/0.153/libdwfl
 
 common_compiler_flags := -Wno-pointer-arith -Wno-attributes -Wno-error \
-	-Wno-unused-parameter -Wno-error=return-type -std=gnu99
+	-Wno-unused-parameter -Wno-error=return-type -std=gnu99 \
+        -Wno-int-conversion
 
 common_disabled_macros := -DNO_NEWT_SUPPORT -DNO_LIBPERL -DNO_LIBPYTHON \
 	-DNO_GTK2 -DNO_LIBNUMA -DNO_LIBAUDIT
@@ -219,7 +220,7 @@ LOCAL_SRC_FILES := $(perf_src_files)
 # dependency on libc.so.
 # Cannot set LOCAL_FORCE_STATIC_EXECUTABLE for perf because libdl doesn't have
 # a static version.
-LOCAL_STATIC_LIBRARIES := libperf 
+LOCAL_STATIC_LIBRARIES := libperf
 LOCAL_STATIC_LIBRARIES += libdwfl libdw libebl libelf libgccdemangle
 LOCAL_STATIC_LIBRARIES += libc libm
 
@@ -245,7 +246,6 @@ include $(BUILD_EXECUTABLE)
 # host perf
 #
 include $(CLEAR_VARS)
-
 LOCAL_SRC_FILES := $(perf_src_files)
 
 LOCAL_STATIC_LIBRARIES := libperf
@@ -260,6 +260,10 @@ LOCAL_CFLAGS += $(common_predefined_macros)
 # available on linux-x86 but not darwin-x86
 ifeq ($(strip $(HOST_OS)),linux)
 LOCAL_CFLAGS += -DHAVE_ON_EXIT
+endif
+
+ifeq ($(strip $(HOST_OS)),darwin)
+LOCAL_CFLAGS += -Wno-implicit-function-declaration
 endif
 
 LOCAL_CFLAGS += $(common_compiler_flags)
