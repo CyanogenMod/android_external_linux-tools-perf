@@ -266,6 +266,8 @@ ifeq ($(strip $(HOST_OS)),darwin)
 LOCAL_CFLAGS += -Wno-implicit-function-declaration
 endif
 
+LOCAL_CFLAGS += -Wno-int-conversion
+
 LOCAL_CFLAGS += $(common_compiler_flags)
 
 # mainly for darwin
