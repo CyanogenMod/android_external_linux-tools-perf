@@ -216,13 +216,14 @@ include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := $(perf_src_files)
 
-# Link libc.a after other static libraries so that there won't be additional
-# dependency on libc.so.
 # Cannot set LOCAL_FORCE_STATIC_EXECUTABLE for perf because libdl doesn't have
 # a static version.
 LOCAL_STATIC_LIBRARIES := libperf
 LOCAL_STATIC_LIBRARIES += libdwfl libdw libebl libelf libgccdemangle
-LOCAL_STATIC_LIBRARIES += libc libm
+LOCAL_STATIC_LIBRARIES += libm libc
+
+# This turns off the link with a shared libc
+LOCAL_SYSTEM_SHARED_LIBRARIES :=
 
 # disable modules not used by Android
 LOCAL_CFLAGS := $(common_disabled_macros)
