@@ -60,7 +60,7 @@ void setup_pager(void)
 			pager = "/usr/bin/pager";
 	}
 	if (!pager)
-		pager = "more";
+		pager = "cat";
 	else if (!*pager || !strcmp(pager, "cat"))
 		return;
 
