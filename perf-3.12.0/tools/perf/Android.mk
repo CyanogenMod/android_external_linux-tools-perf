@@ -134,7 +134,7 @@ common_compiler_flags := \
 ifeq ($(strip $(HOST_OS)),darwin)
 common_compiler_flags += -include $(LOCAL_PATH)/host-darwin-fixup/AndroidFixup.h
 else
-common_compiler_flags := \
+common_compiler_flags += \
     -Wno-attributes \
     -Wno-implicit-function-declaration \
     -Wno-int-conversion \
