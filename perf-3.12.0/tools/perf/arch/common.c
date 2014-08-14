@@ -12,6 +12,13 @@ const char *const arm_triplets[] = {
 	NULL
 };
 
+#if defined(ANDROID_PATCHES)
+const char *const arm64_triplets[] = {
+	"aarch64-linux-android-",
+	NULL
+};
+#endif
+
 const char *const powerpc_triplets[] = {
 	"powerpc-unknown-linux-gnu-",
 	"powerpc64-unknown-linux-gnu-",
@@ -105,6 +112,10 @@ static const char *normalize_arch(char *arch)
 		return "x86";
 	if (!strcmp(arch, "sun4u") || !strncmp(arch, "sparc", 5))
 		return "sparc";
+#if defined(ANDROID_PATCHES)
+	if (!strcmp(arch, "aarch64") || !strcmp(arch, "arm64"))
+		return "arm64";
+#endif
 	if (!strncmp(arch, "arm", 3) || !strcmp(arch, "sa110"))
 		return "arm";
 	if (!strncmp(arch, "s390", 4))
@@ -160,6 +171,10 @@ static int perf_session_env__lookup_binutils_path(struct perf_session_env *env,
 
 	if (!strcmp(arch, "arm"))
 		path_list = arm_triplets;
+#if defined(ANDROID_PATCHES)
+	else if (!strcmp(arch, "arm64"))
+		path_list = arm64_triplets;
+#endif
 	else if (!strcmp(arch, "powerpc"))
 		path_list = powerpc_triplets;
 	else if (!strcmp(arch, "sh"))

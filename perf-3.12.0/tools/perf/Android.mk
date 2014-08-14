@@ -127,6 +127,7 @@ common_elfutil_headers := external/elfutils external/elfutils/0.153/libelf \
     external/elfutils/0.153/libdw external/elfutils/0.153/libdwfl
 
 common_compiler_flags := \
+    -DANDROID_PATCHES \
     -Wno-error \
     -std=gnu99 \
     -Wno-return-type \
