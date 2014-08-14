@@ -129,6 +129,12 @@ common_elfutil_headers := external/elfutils external/elfutils/0.153/libelf \
 common_compiler_flags := \
     -Wno-error \
     -std=gnu99 \
+    -Wno-return-type \
+
+ifeq ($(strip $(HOST_OS)),darwin)
+common_compiler_flags += -include $(LOCAL_PATH)/host-darwin-fixup/AndroidFixup.h
+else
+common_compiler_flags := \
     -Wno-attributes \
     -Wno-implicit-function-declaration \
     -Wno-int-conversion \
@@ -137,12 +143,9 @@ common_compiler_flags := \
     -Wno-missing-field-initializers \
     -Wno-pointer-arith \
     -Wno-pointer-sign \
-    -Wno-return-type \
     -Wno-sign-compare \
     -Wno-unused-parameter \
 
-ifeq ($(strip $(HOST_OS)),darwin)
-common_compiler_flags += -include $(LOCAL_PATH)/host-darwin-fixup/AndroidFixup.h
 endif
 
 common_disabled_macros := -DNO_NEWT_SUPPORT -DNO_LIBPERL -DNO_LIBPYTHON \
