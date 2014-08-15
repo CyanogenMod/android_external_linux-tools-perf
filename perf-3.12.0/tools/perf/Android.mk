@@ -33,9 +33,6 @@ ifeq ($(TARGET_ARCH), mips64)
 perf_arch := mips
 endif
 
-#
-# target libperf
-#
 libperf_src_files := \
     arch/common.c \
     arch/$(perf_arch)/util/dwarf-regs.c \
@@ -132,9 +129,7 @@ common_compiler_flags := \
     -std=gnu99 \
     -Wno-return-type \
 
-ifeq ($(strip $(HOST_OS)),darwin)
-common_compiler_flags += -include $(LOCAL_PATH)/host-darwin-fixup/AndroidFixup.h
-else
+ifeq ($(strip $(HOST_OS)),linux)
 common_compiler_flags += \
     -Wno-attributes \
     -Wno-implicit-function-declaration \
@@ -149,6 +144,10 @@ common_compiler_flags += \
 
 endif
 
+ifeq ($(strip $(HOST_OS)),darwin)
+host_compiler_flags := -include $(LOCAL_PATH)/host-darwin-fixup/AndroidFixup.h
+endif
+
 common_disabled_macros := -DNO_NEWT_SUPPORT -DNO_LIBPERL -DNO_LIBPYTHON \
     -DNO_GTK2 -DNO_LIBNUMA -DNO_LIBAUDIT
 
@@ -158,6 +157,32 @@ common_predefined_macros := -DDWARF_SUPPORT -DPYTHON='""' -DBINDIR='""' \
     -DPERF_VERSION='"perf.3.12_android"' -DHAVE_ELF_GETPHDRNUM \
     -DLIBELF_SUPPORT -DLIBELF_MMAP
 
+perf_src_files := \
+    perf.c \
+    builtin-annotate.c \
+    builtin-buildid-cache.c \
+    builtin-buildid-list.c \
+    builtin-diff.c \
+    builtin-evlist.c \
+    builtin-help.c \
+    builtin-inject.c \
+    builtin-kmem.c \
+    builtin-list.c \
+    builtin-lock.c \
+    builtin-mem.c \
+    builtin-probe.c \
+    builtin-record.c \
+    builtin-report.c \
+    builtin-sched.c \
+    builtin-script.c \
+    builtin-stat.c \
+    builtin-timechart.c \
+    builtin-top.c \
+
+
+#
+# target libperf
+#
 include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := $(libperf_src_files)
@@ -182,7 +207,7 @@ LOCAL_SRC_FILES := $(libperf_src_files)
 
 LOCAL_CFLAGS := $(common_disabled_macros)
 LOCAL_CFLAGS += $(common_predefined_macros)
-LOCAL_CFLAGS += $(common_compiler_flags)
+LOCAL_CFLAGS += $(common_compiler_flags) $(host_compiler_flags)
 LOCAL_C_INCLUDES := $(common_perf_headers) $(common_elfutil_headers)
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/host-$(HOST_OS)-fixup
 
@@ -195,28 +220,6 @@ include $(BUILD_HOST_STATIC_LIBRARY)
 #
 # target perf
 #
-perf_src_files := \
-    perf.c \
-    builtin-annotate.c \
-    builtin-buildid-cache.c \
-    builtin-buildid-list.c \
-    builtin-diff.c \
-    builtin-evlist.c \
-    builtin-help.c \
-    builtin-inject.c \
-    builtin-kmem.c \
-    builtin-list.c \
-    builtin-lock.c \
-    builtin-mem.c \
-    builtin-probe.c \
-    builtin-record.c \
-    builtin-report.c \
-    builtin-sched.c \
-    builtin-script.c \
-    builtin-stat.c \
-    builtin-timechart.c \
-    builtin-top.c \
-
 include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := $(perf_src_files)
@@ -263,7 +266,7 @@ LOCAL_STATIC_LIBRARIES := \
 
 LOCAL_CFLAGS := $(common_disabled_macros)
 LOCAL_CFLAGS += $(common_predefined_macros)
-LOCAL_CFLAGS += $(common_compiler_flags)
+LOCAL_CFLAGS += $(common_compiler_flags) $(host_compiler_flags)
 
 # available on linux-x86 but not darwin-x86
 ifeq ($(strip $(HOST_OS)),linux)
