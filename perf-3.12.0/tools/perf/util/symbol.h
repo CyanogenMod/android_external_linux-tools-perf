@@ -37,18 +37,8 @@ static inline char *bfd_demangle(void __maybe_unused *v,
 	return NULL;
 }
 #else
-#ifdef ANDROID
-/* in external/gcc-demangle */
-extern char *__cxa_demangle (const char *, char *, size_t *, int *);
-
-static inline char *bfd_demangle(void *v, const char *c, int i)
-{
-    return __cxa_demangle(c, NULL, NULL, NULL);
-}
-#else
 #define PACKAGE 'perf'
 #include <bfd.h>
-#endif
 #endif
 #endif
 

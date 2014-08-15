@@ -41,9 +41,7 @@ static struct cmd_struct commands[] = {
 	{ "list",	cmd_list,	0 },
 	{ "record",	cmd_record,	0 },
 	{ "report",	cmd_report,	0 },
-#ifndef ANDROID
 	{ "bench",	cmd_bench,	0 },
-#endif
 	{ "stat",	cmd_stat,	0 },
 	{ "timechart",	cmd_timechart,	0 },
 	{ "top",	cmd_top,	0 },
@@ -56,10 +54,8 @@ static struct cmd_struct commands[] = {
 #endif
 	{ "kmem",	cmd_kmem,	0 },
 	{ "lock",	cmd_lock,	0 },
-#ifndef ANDROID
 	{ "kvm",	cmd_kvm,	0 },
 	{ "test",	cmd_test,	0 },
-#endif
 #ifdef LIBAUDIT_SUPPORT
 	{ "trace",	cmd_trace,	0 },
 #endif

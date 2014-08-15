@@ -929,7 +929,6 @@ static int perf_top__setup_sample_type(struct perf_top *top __maybe_unused)
 
 static int __cmd_top(struct perf_top *top)
 {
-#ifndef __APPLE__
 	struct perf_record_opts *opts = &top->record_opts;
 	pthread_t thread;
 	int ret;
@@ -1016,9 +1015,6 @@ out_delete:
 	top->session = NULL;
 
 	return ret;
-#else
-	return -1;
-#endif
 }
 
 static int

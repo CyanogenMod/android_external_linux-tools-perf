@@ -381,13 +381,13 @@ void dso__set_short_name(struct dso *dso, const char *name)
 
 static void dso__set_basename(struct dso *dso)
 {
-	char *lname, *base;
-
+#if defined(__BIONIC__)
 	/*
-	 * basename may modify path buffer, so we must pass
-	 * a copy.
+	 * This code assumes the <string.h> basename but bionic
+	 * only has the <libgen.h> kind. Fake it. http://b/11860789.
 	 */
-	lname = strdup(dso->long_name);
+
+	char *lname = strdup(dso->long_name);
 	if (!lname)
 		return;
 
@@ -396,19 +396,17 @@ static void dso__set_basename(struct dso *dso)
 	 * storage which is reused in subsequent calls
 	 * so copy the result
 	 */
-	base = strdup(basename(lname));
+	char *base = strdup(basename(lname));
 
 	free(lname);
 
 	if (!base)
 		return;
 
-	/*
-	 * basename may modify content, so we must pass
-	 * a copy. Moreover basename may return pointer to internal
-	 * storage we may be reusing later on
-	 */
 	dso__set_short_name(dso, base);
+#else
+	dso__set_short_name(dso, basename(dso->long_name));
+#endif
 }
 
 int dso__name_len(const struct dso *dso)
