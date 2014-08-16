@@ -17,7 +17,7 @@ LOCAL_PATH := $(call my-dir)
 ifeq ($(TARGET_PRODUCT),sdk)
 supported_platforms := none
 else
-supported_platforms := linux darwin
+supported_platforms := linux
 endif
 
 cur_platform := $(filter $(HOST_OS),$(supported_platforms))
@@ -33,6 +33,9 @@ ifeq ($(TARGET_ARCH), mips64)
 perf_arch := mips
 endif
 
+#
+# target libperf
+#
 libperf_src_files := \
     arch/common.c \
     arch/$(perf_arch)/util/dwarf-regs.c \
@@ -117,20 +120,22 @@ libperf_src_files := \
     ../lib/traceevent/trace-seq.c \
     ../../lib/rbtree.c
 
-common_perf_headers := $(LOCAL_PATH)/../lib $(LOCAL_PATH)/util/include \
-    $(LOCAL_PATH)/util $(LOCAL_PATH)/../../include/uapi
+common_perf_headers := \
+    $(LOCAL_PATH)/../lib \
+    $(LOCAL_PATH)/util/include \
+    $(LOCAL_PATH)/util \
+    bionic/libc/kernel/uapi \
 
-common_elfutil_headers := external/elfutils external/elfutils/0.153/libelf \
-    external/elfutils/0.153/libdw external/elfutils/0.153/libdwfl
+common_elfutil_headers := \
+    external/elfutils \
+    external/elfutils/0.153/libelf \
+    external/elfutils/0.153/libdw \
+    external/elfutils/0.153/libdwfl \
 
 common_compiler_flags := \
-    -DANDROID_PATCHES \
+    -include external/linux-tools-perf/android-fixes.h \
     -Wno-error \
     -std=gnu99 \
-    -Wno-return-type \
-
-ifeq ($(strip $(HOST_OS)),linux)
-common_compiler_flags += \
     -Wno-attributes \
     -Wno-implicit-function-declaration \
     -Wno-int-conversion \
@@ -139,55 +144,42 @@ common_compiler_flags += \
     -Wno-missing-field-initializers \
     -Wno-pointer-arith \
     -Wno-pointer-sign \
+    -Wno-return-type \
     -Wno-sign-compare \
     -Wno-unused-parameter \
 
-endif
+common_predefined_macros := \
+    -D_GNU_SOURCE \
+    -DDWARF_SUPPORT \
+    -DPYTHON='""' \
+    -DPYTHONPATH='""' \
+    -DBINDIR='""' \
+    -DETC_PERFCONFIG='""' \
+    -DPREFIX='""' \
+    -DPERF_EXEC_PATH='""' \
+    -DPERF_HTML_PATH='""' \
+    -DPERF_MAN_PATH='""' \
+    -DPERF_INFO_PATH='""' \
+    -DPERF_VERSION='"perf.3.12_android"' \
+    -DHAVE_ELF_GETPHDRNUM \
+    -DHAVE_CPLUS_DEMANGLE \
+    -DLIBELF_SUPPORT \
+    -DLIBELF_MMAP \
+    -DNO_NEWT_SUPPORT \
+    -DNO_LIBPERL \
+    -DNO_LIBPYTHON \
+    -DNO_GTK2 \
+    -DNO_LIBNUMA \
+    -DNO_LIBAUDIT \
 
-ifeq ($(strip $(HOST_OS)),darwin)
-host_compiler_flags := -include $(LOCAL_PATH)/host-darwin-fixup/AndroidFixup.h
-endif
+# glibc has the obsolete on_exit, which collides with perf's redefinition.
+host_predefined_macros := \
+    -DHAVE_ON_EXIT \
 
-common_disabled_macros := -DNO_NEWT_SUPPORT -DNO_LIBPERL -DNO_LIBPYTHON \
-    -DNO_GTK2 -DNO_LIBNUMA -DNO_LIBAUDIT
-
-common_predefined_macros := -DDWARF_SUPPORT -DPYTHON='""' -DBINDIR='""' \
-    -DETC_PERFCONFIG='""' -DPREFIX='""' -DPERF_EXEC_PATH='""' \
-    -DPERF_HTML_PATH='""' -DPERF_MAN_PATH='""' -DPERF_INFO_PATH='""' \
-    -DPERF_VERSION='"perf.3.12_android"' -DHAVE_ELF_GETPHDRNUM \
-    -DLIBELF_SUPPORT -DLIBELF_MMAP
-
-perf_src_files := \
-    perf.c \
-    builtin-annotate.c \
-    builtin-buildid-cache.c \
-    builtin-buildid-list.c \
-    builtin-diff.c \
-    builtin-evlist.c \
-    builtin-help.c \
-    builtin-inject.c \
-    builtin-kmem.c \
-    builtin-list.c \
-    builtin-lock.c \
-    builtin-mem.c \
-    builtin-probe.c \
-    builtin-record.c \
-    builtin-report.c \
-    builtin-sched.c \
-    builtin-script.c \
-    builtin-stat.c \
-    builtin-timechart.c \
-    builtin-top.c \
-
-
-#
-# target libperf
-#
 include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := $(libperf_src_files)
 
-LOCAL_CFLAGS := $(common_disabled_macros)
 LOCAL_CFLAGS += $(common_predefined_macros)
 LOCAL_CFLAGS += $(common_compiler_flags)
 LOCAL_C_INCLUDES := $(common_perf_headers) $(common_elfutil_headers)
@@ -205,9 +197,8 @@ include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := $(libperf_src_files)
 
-LOCAL_CFLAGS := $(common_disabled_macros)
-LOCAL_CFLAGS += $(common_predefined_macros)
-LOCAL_CFLAGS += $(common_compiler_flags) $(host_compiler_flags)
+LOCAL_CFLAGS += $(common_predefined_macros) $(host_predefined_macros)
+LOCAL_CFLAGS += $(common_compiler_flags)
 LOCAL_C_INCLUDES := $(common_perf_headers) $(common_elfutil_headers)
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/host-$(HOST_OS)-fixup
 
@@ -220,9 +211,67 @@ include $(BUILD_HOST_STATIC_LIBRARY)
 #
 # target perf
 #
+perf_src_files := \
+    perf.c \
+    bench/mem-memcpy.c \
+    bench/mem-memset.c \
+    bench/sched-messaging.c \
+    bench/sched-pipe.c \
+    builtin-annotate.c \
+    builtin-bench.c \
+    builtin-buildid-cache.c \
+    builtin-buildid-list.c \
+    builtin-diff.c \
+    builtin-evlist.c \
+    builtin-help.c \
+    builtin-inject.c \
+    builtin-kmem.c \
+    builtin-kvm.c \
+    builtin-list.c \
+    builtin-lock.c \
+    builtin-mem.c \
+    builtin-probe.c \
+    builtin-record.c \
+    builtin-report.c \
+    builtin-sched.c \
+    builtin-script.c \
+    builtin-stat.c \
+    builtin-timechart.c \
+    builtin-top.c \
+    tests/attr.c \
+    tests/bp_signal.c \
+    tests/bp_signal_overflow.c \
+    tests/builtin-test.c \
+    tests/code-reading.c \
+    tests/dso-data.c \
+    tests/evsel-roundtrip-name.c \
+    tests/evsel-tp-sched.c \
+    tests/hists_link.c \
+    tests/keep-tracking.c \
+    tests/mmap-basic.c \
+    tests/open-syscall-all-cpus.c \
+    tests/open-syscall.c \
+    tests/open-syscall-tp-fields.c \
+    tests/parse-events.c \
+    tests/parse-no-sample-id-all.c \
+    tests/perf-record.c \
+    tests/pmu.c \
+    tests/python-use.c \
+    tests/rdpmc.c \
+    tests/sample-parsing.c \
+    tests/sw-clock.c \
+    tests/task-exit.c \
+    tests/vmlinux-kallsyms.c \
+
+perf_src_files_x86 = \
+    arch/x86/util/tsc.c \
+    tests/perf-time-to-tsc.c \
+
 include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := $(perf_src_files)
+LOCAL_SRC_FILES_x86 := $(perf_src_files_x86)
+LOCAL_SRC_FILES_x86_64 := $(perf_src_files_x86)
 
 # TODO: this is only needed because of libebl below, which seems like a mistake on the target.
 LOCAL_SHARED_LIBRARIES := libdl
@@ -236,7 +285,6 @@ LOCAL_STATIC_LIBRARIES := \
     libelf \
     libgccdemangle \
 
-LOCAL_CFLAGS := $(common_disabled_macros)
 LOCAL_CFLAGS += $(common_predefined_macros)
 LOCAL_CFLAGS += $(common_compiler_flags)
 LOCAL_C_INCLUDES := $(common_perf_headers) $(common_elfutil_headers)
@@ -251,7 +299,10 @@ include $(BUILD_EXECUTABLE)
 # host perf
 #
 include $(CLEAR_VARS)
+
 LOCAL_SRC_FILES := $(perf_src_files)
+LOCAL_SRC_FILES_x86 := $(perf_src_files_x86)
+LOCAL_SRC_FILES_x86_64 := $(perf_src_files_x86)
 
 # TODO: libebl tries to dlopen libebl_$arch.so, which we don't actually build.
 # At the moment it's probably pulling in the ones from the host OS' perf, at
@@ -264,24 +315,15 @@ LOCAL_STATIC_LIBRARIES := \
     libelf \
     libgccdemangle \
 
-LOCAL_CFLAGS := $(common_disabled_macros)
-LOCAL_CFLAGS += $(common_predefined_macros)
-LOCAL_CFLAGS += $(common_compiler_flags) $(host_compiler_flags)
-
-# available on linux-x86 but not darwin-x86
-ifeq ($(strip $(HOST_OS)),linux)
-LOCAL_CFLAGS += -DHAVE_ON_EXIT
-endif
+LOCAL_CFLAGS += $(common_predefined_macros) $(host_predefined_macros)
+LOCAL_CFLAGS += $(common_compiler_flags)
 
 LOCAL_C_INCLUDES := $(common_perf_headers) $(common_elfutil_headers)
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/host-$(HOST_OS)-fixup
 
-# for pthread_* and clock_gettime
-LOCAL_LDLIBS := -lpthread -ldl
+LOCAL_C_INCLUDES += bionic/libc/kernel/uapi/asm-x86 # The kvm stuff needs <asm/svm.h>.
 
-ifeq ($(strip $(HOST_OS)),linux)
-LOCAL_LDLIBS += -lrt
-endif
+LOCAL_LDLIBS := -ldl -lpthread -lrt
 
 LOCAL_MODULE := perfhost
 LOCAL_MODULE_TAGS := eng

@@ -5,10 +5,6 @@
 #include <linux/compiler.h>
 #include <asm/hweight.h>
 
-#ifdef __APPLE__
-#define __SIZEOF_LONG__ 4
-#endif
-
 #ifndef __WORDSIZE
 #define __WORDSIZE (__SIZEOF_LONG__ * 8)
 #endif
