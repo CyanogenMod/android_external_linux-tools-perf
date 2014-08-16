@@ -173,16 +173,11 @@ struct perf_sched {
 
 static u64 get_nsecs(void)
 {
-#ifndef __APPLE__
 	struct timespec ts;
 
 	clock_gettime(CLOCK_MONOTONIC, &ts);
 
 	return ts.tv_sec * 1000000000ULL + ts.tv_nsec;
-#else
-	perror("get_nsecs not supported on MacOS");
-	return 0;
-#endif
 }
 
 static void burn_nsecs(struct perf_sched *sched, u64 nsecs)
@@ -466,7 +461,6 @@ struct sched_thread_parms {
 
 static void *thread_func(void *ctx)
 {
-#ifndef __APPLE__
 	struct sched_thread_parms *parms = ctx;
 	struct task_desc *this_task = parms->task;
 	struct perf_sched *sched = parms->sched;
@@ -508,10 +502,6 @@ again:
 	BUG_ON(ret);
 
 	goto again;
-#else
-	perror("thread_func not supported on MacOS");
-	return NULL;
-#endif
 }
 
 static void create_tasks(struct perf_sched *sched)

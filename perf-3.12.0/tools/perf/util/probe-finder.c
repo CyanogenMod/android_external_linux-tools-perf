@@ -147,13 +147,28 @@ error:
 	return -ENOENT;
 }
 
+#if defined(ANDROID_PATCHES)
 /*
- * ANDROID LOCAL PATCH
  * Bionic doesn't have stdio_ext.h which is used by dwfl_linux_kernel_find_elf.
  * So we just disable the new feature here even though we are pairing perf with
  * elfutils 0.153 now.
  */
-#if _ELFUTILS_PREREQ(0, 148) && 0
+/* With older elfutils, this just support kernel module... */
+static int debuginfo__init_online_kernel_dwarf(struct debuginfo *self,
+					       Dwarf_Addr addr __maybe_unused)
+{
+	const char *path = kernel_get_module_path("kernel");
+
+	if (!path) {
+		pr_err("Failed to find vmlinux path\n");
+		return -ENOENT;
+	}
+
+	pr_debug2("Use file %s for debuginfo\n", path);
+	return debuginfo__init_offline_dwarf(self, path);
+}
+#else
+#if _ELFUTILS_PREREQ(0, 148)
 /* This method is buggy if elfutils is older than 0.148 */
 static int __linux_kernel_find_elf(Dwfl_Module *mod,
 				   void **userdata,
@@ -209,21 +224,7 @@ static int debuginfo__init_online_kernel_dwarf(struct debuginfo *self,
 
 	return 0;
 }
-#else
-/* With older elfutils, this just support kernel module... */
-static int debuginfo__init_online_kernel_dwarf(struct debuginfo *self,
-					       Dwarf_Addr addr __maybe_unused)
-{
-	const char *path = kernel_get_module_path("kernel");
-
-	if (!path) {
-		pr_err("Failed to find vmlinux path\n");
-		return -ENOENT;
-	}
-
-	pr_debug2("Use file %s for debuginfo\n", path);
-	return debuginfo__init_offline_dwarf(self, path);
-}
+#endif
 #endif
 
 struct debuginfo *debuginfo__new(const char *path)

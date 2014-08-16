@@ -358,7 +358,6 @@ static int read_counter(struct perf_evsel *counter)
 
 static void print_interval(void)
 {
-#ifndef __APPLE__
 	static int num_print_interval;
 	struct perf_evsel *counter;
 	struct perf_stat *ps;
@@ -419,9 +418,6 @@ static void print_interval(void)
 	}
 
 	fflush(output);
-#else
-	perror("print_interval not supported on MacOS");
-#endif
 }
 
 static void handle_initial_delay(void)
@@ -440,7 +436,6 @@ static void handle_initial_delay(void)
 
 static int __run_perf_stat(int argc, const char **argv)
 {
-#ifndef __APPLE__
 	char msg[512];
 	unsigned long long t0, t1;
 	struct perf_evsel *counter;
@@ -548,9 +543,6 @@ static int __run_perf_stat(int argc, const char **argv)
 	}
 
 	return WEXITSTATUS(status);
-#else
-	return -1;
-#endif
 }
 
 static int run_perf_stat(int argc __maybe_unused, const char **argv)
@@ -1393,7 +1385,6 @@ static int add_default_attributes(void)
 
 int cmd_stat(int argc, const char **argv, const char *prefix __maybe_unused)
 {
-#ifndef __APPLE__
 	bool append_file = false;
 	int output_fd = 0;
 	const char *output_name	= NULL;
@@ -1603,8 +1594,4 @@ out_free_maps:
 out:
 	perf_evlist__delete(evsel_list);
 	return status;
-#else
-	perror("cmd_stat not supported on MacOS");
-	return -1;
-#endif
 }
