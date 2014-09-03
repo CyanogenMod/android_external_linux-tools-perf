@@ -177,6 +177,9 @@ host_predefined_macros := \
     -DHAVE_ON_EXIT \
 
 include $(CLEAR_VARS)
+# builtin-report.c and builtin-top.c have undefined __aeabi_read_tp
+# when compiled with clang -fpie.
+LOCAL_CLANG := false
 
 LOCAL_SRC_FILES := $(libperf_src_files)
 
@@ -194,6 +197,9 @@ include $(BUILD_STATIC_LIBRARY)
 # host libperf
 #
 include $(CLEAR_VARS)
+# builtin-report.c and builtin-top.c have undefined __aeabi_read_tp
+# when compiled with clang -fpie.
+LOCAL_CLANG := false
 
 LOCAL_SRC_FILES := $(libperf_src_files)
 
@@ -268,6 +274,9 @@ perf_src_files_x86 = \
     tests/perf-time-to-tsc.c \
 
 include $(CLEAR_VARS)
+# builtin-report.c and builtin-top.c have undefined __aeabi_read_tp
+# when compiled with clang -fpie.
+LOCAL_CLANG := false
 
 LOCAL_SRC_FILES := $(perf_src_files)
 LOCAL_SRC_FILES_x86 := $(perf_src_files_x86)
@@ -299,6 +308,9 @@ include $(BUILD_EXECUTABLE)
 # host perf
 #
 include $(CLEAR_VARS)
+# builtin-report.c and builtin-top.c have undefined __aeabi_read_tp
+# when compiled with clang -fpie.
+LOCAL_CLANG := false
 
 LOCAL_SRC_FILES := $(perf_src_files)
 LOCAL_SRC_FILES_x86 := $(perf_src_files_x86)
