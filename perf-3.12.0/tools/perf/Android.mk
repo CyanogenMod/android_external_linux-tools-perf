@@ -132,13 +132,15 @@ common_elfutil_headers := \
     external/elfutils/0.153/libdw \
     external/elfutils/0.153/libdwfl \
 
+common_clang_compiler_flags := \
+    -Wno-int-conversion \
+
 common_compiler_flags := \
     -include external/linux-tools-perf/android-fixes.h \
     -Wno-error \
     -std=gnu99 \
     -Wno-attributes \
     -Wno-implicit-function-declaration \
-    -Wno-int-conversion \
     -Wno-int-to-pointer-cast \
     -Wno-maybe-uninitialized \
     -Wno-missing-field-initializers \
@@ -185,6 +187,7 @@ LOCAL_SRC_FILES := $(libperf_src_files)
 
 LOCAL_CFLAGS += $(common_predefined_macros)
 LOCAL_CFLAGS += $(common_compiler_flags)
+LOCAL_CLANG_CFLAGS += $(common_clang_compiler_flags)
 LOCAL_C_INCLUDES := $(common_perf_headers) $(common_elfutil_headers)
 
 LOCAL_MODULE := libperf
@@ -205,6 +208,7 @@ LOCAL_SRC_FILES := $(libperf_src_files)
 
 LOCAL_CFLAGS += $(common_predefined_macros) $(host_predefined_macros)
 LOCAL_CFLAGS += $(common_compiler_flags)
+LOCAL_CLANG_CFLAGS += $(common_clang_compiler_flags)
 LOCAL_C_INCLUDES := $(common_perf_headers) $(common_elfutil_headers)
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/host-$(HOST_OS)-fixup
 
@@ -296,6 +300,7 @@ LOCAL_STATIC_LIBRARIES := \
 
 LOCAL_CFLAGS += $(common_predefined_macros)
 LOCAL_CFLAGS += $(common_compiler_flags)
+LOCAL_CLANG_CFLAGS += $(common_clang_compiler_flags)
 LOCAL_C_INCLUDES := $(common_perf_headers) $(common_elfutil_headers)
 
 LOCAL_MODULE := perf
@@ -329,6 +334,7 @@ LOCAL_STATIC_LIBRARIES := \
 
 LOCAL_CFLAGS += $(common_predefined_macros) $(host_predefined_macros)
 LOCAL_CFLAGS += $(common_compiler_flags)
+LOCAL_CLANG_CFLAGS += $(common_clang_compiler_flags)
 
 LOCAL_C_INCLUDES := $(common_perf_headers) $(common_elfutil_headers)
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/host-$(HOST_OS)-fixup
