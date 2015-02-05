@@ -3,7 +3,7 @@
 
 #include <stddef.h>
 
-/* In external/gcc-demangle. */
+/* In libcxxabi. */
 extern char* __cxa_demangle(const char*, char*, size_t*, int*);
 
 /* So we can say HAVE_CPLUS_DEMANGLE (since we don't have libbfd). */
