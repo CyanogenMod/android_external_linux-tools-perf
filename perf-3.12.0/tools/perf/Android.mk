@@ -300,7 +300,6 @@ LOCAL_STATIC_LIBRARIES := \
     libdw \
     libebl \
     libelf \
-    libgccdemangle \
 
 LOCAL_CFLAGS += $(common_predefined_macros)
 LOCAL_CFLAGS += $(common_compiler_flags)
@@ -331,7 +330,6 @@ LOCAL_STATIC_LIBRARIES := \
     libdw \
     libebl \
     libelf \
-    libgccdemangle \
 
 LOCAL_CFLAGS += $(common_predefined_macros) $(host_predefined_macros)
 LOCAL_CFLAGS += $(common_compiler_flags)
