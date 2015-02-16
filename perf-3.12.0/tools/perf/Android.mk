@@ -39,7 +39,6 @@ endif
 libperf_src_files := \
     arch/common.c \
     arch/$(perf_arch)/util/dwarf-regs.c \
-    tests/attr.c \
     ui/helpline.c \
     ui/hist.c \
     ui/progress.c \
@@ -127,10 +126,7 @@ common_perf_headers := \
     bionic/libc/kernel/uapi \
 
 common_elfutil_headers := \
-    external/elfutils \
-    external/elfutils/0.153/libelf \
-    external/elfutils/0.153/libdw \
-    external/elfutils/0.153/libdwfl \
+    external/elfutils/include/ \
 
 common_clang_compiler_flags := \
     -Wno-int-conversion \
@@ -180,45 +176,6 @@ common_predefined_macros := \
 # glibc has the obsolete on_exit, which collides with perf's redefinition.
 host_predefined_macros := \
     -DHAVE_ON_EXIT \
-
-include $(CLEAR_VARS)
-ifeq ($(TARGET_ARCH),arm)
-# b/17167262, builtin-report.c and builtin-top.c have undefined __aeabi_read_tp
-# when compiled with clang -fpie.
-LOCAL_CLANG := false
-endif
-
-LOCAL_SRC_FILES := $(libperf_src_files)
-
-LOCAL_CFLAGS += $(common_predefined_macros)
-LOCAL_CFLAGS += $(common_compiler_flags)
-LOCAL_CLANG_CFLAGS += $(common_clang_compiler_flags)
-LOCAL_C_INCLUDES := $(common_perf_headers) $(common_elfutil_headers)
-
-LOCAL_MODULE := libperf
-LOCAL_MODULE_TAGS := eng
-LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
-
-include $(BUILD_STATIC_LIBRARY)
-
-#
-# host libperf
-#
-include $(CLEAR_VARS)
-
-LOCAL_SRC_FILES := $(libperf_src_files)
-
-LOCAL_CFLAGS += $(common_predefined_macros) $(host_predefined_macros)
-LOCAL_CFLAGS += $(common_compiler_flags)
-LOCAL_CLANG_CFLAGS += $(common_clang_compiler_flags)
-LOCAL_C_INCLUDES := $(common_perf_headers) $(common_elfutil_headers)
-LOCAL_C_INCLUDES += $(LOCAL_PATH)/host-$(HOST_OS)-fixup
-
-LOCAL_MODULE := libperf
-LOCAL_MODULE_TAGS := eng
-LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
-
-include $(BUILD_HOST_STATIC_LIBRARY)
 
 #
 # target perf
@@ -286,7 +243,7 @@ ifeq ($(TARGET_ARCH),arm)
 LOCAL_CLANG := false
 endif
 
-LOCAL_SRC_FILES := $(perf_src_files)
+LOCAL_SRC_FILES := $(libperf_src_files) $(perf_src_files)
 LOCAL_SRC_FILES_x86 := $(perf_src_files_x86)
 LOCAL_SRC_FILES_x86_64 := $(perf_src_files_x86)
 
@@ -295,7 +252,6 @@ LOCAL_SHARED_LIBRARIES := libdl
 
 # TODO: there's probably more stuff here than is strictly necessary on the target.
 LOCAL_STATIC_LIBRARIES := \
-    libperf \
     libdwfl \
     libdw \
     libebl \
@@ -317,7 +273,7 @@ include $(BUILD_EXECUTABLE)
 #
 include $(CLEAR_VARS)
 
-LOCAL_SRC_FILES := $(perf_src_files)
+LOCAL_SRC_FILES := $(perf_src_files) $(libperf_src_files)
 LOCAL_SRC_FILES_x86 := $(perf_src_files_x86)
 LOCAL_SRC_FILES_x86_64 := $(perf_src_files_x86)
 
@@ -325,7 +281,6 @@ LOCAL_SRC_FILES_x86_64 := $(perf_src_files_x86)
 # At the moment it's probably pulling in the ones from the host OS' perf, at
 # least on Linux. On the Mac it's probably just completely broken.
 LOCAL_STATIC_LIBRARIES := \
-    libperf \
     libdwfl \
     libdw \
     libebl \
@@ -336,7 +291,6 @@ LOCAL_CFLAGS += $(common_compiler_flags)
 LOCAL_CLANG_CFLAGS += $(common_clang_compiler_flags)
 
 LOCAL_C_INCLUDES := $(common_perf_headers) $(common_elfutil_headers)
-LOCAL_C_INCLUDES += $(LOCAL_PATH)/host-$(HOST_OS)-fixup
 
 LOCAL_C_INCLUDES += bionic/libc/kernel/uapi/asm-x86 # The kvm stuff needs <asm/svm.h>.
 
