@@ -15,5 +15,5 @@
 LOCAL_PATH := $(call my-dir)
 
 ifneq ($(TARGET_ARCH),$(filter $(TARGET_ARCH),mips mips64))
-include $(LOCAL_PATH)/perf-3.12.0/tools/perf/Android.mk
+include $(LOCAL_PATH)/src/tools/perf/Android.mk
 endif
