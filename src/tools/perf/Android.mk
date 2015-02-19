@@ -255,7 +255,9 @@ LOCAL_STATIC_LIBRARIES := \
     libdwfl \
     libdw \
     libebl \
+    libdwelf \
     libelf \
+    libz \
 
 LOCAL_CFLAGS += $(common_predefined_macros)
 LOCAL_CFLAGS += $(common_compiler_flags)
@@ -279,12 +281,14 @@ LOCAL_SRC_FILES_x86_64 := $(perf_src_files_x86)
 
 # TODO: libebl tries to dlopen libebl_$arch.so, which we don't actually build.
 # At the moment it's probably pulling in the ones from the host OS' perf, at
-# least on Linux. On the Mac it's probably just completely broken.
+# least on Linux.
 LOCAL_STATIC_LIBRARIES := \
     libdwfl \
     libdw \
     libebl \
+    libdwelf \
     libelf \
+    libz \
 
 LOCAL_CFLAGS += $(common_predefined_macros) $(host_predefined_macros)
 LOCAL_CFLAGS += $(common_compiler_flags)
