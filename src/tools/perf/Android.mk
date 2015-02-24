@@ -140,7 +140,6 @@ common_compiler_flags := \
     -std=gnu99 \
     -Wno-attributes \
     -Wno-implicit-function-declaration \
-    -Wno-int-to-pointer-cast \
     -Wno-maybe-uninitialized \
     -Wno-missing-field-initializers \
     -Wno-pointer-arith \
