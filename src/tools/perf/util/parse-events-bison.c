@@ -1717,7 +1717,7 @@ yyreduce:
 
 	ALLOC_LIST(list);
 	ABORT_ON(parse_events_add_breakpoint(list, &data->idx,
-					     (void *) (yyvsp[(2) - (5)].num), (yyvsp[(4) - (5)].str)));
+					     (void *)(uintptr_t) (yyvsp[(2) - (5)].num), (yyvsp[(4) - (5)].str)));
 	(yyval.head) = list;
 }
     break;
@@ -1732,7 +1732,7 @@ yyreduce:
 
 	ALLOC_LIST(list);
 	ABORT_ON(parse_events_add_breakpoint(list, &data->idx,
-					     (void *) (yyvsp[(2) - (3)].num), NULL));
+					     (void *)(uintptr_t) (yyvsp[(2) - (3)].num), NULL));
 	(yyval.head) = list;
 }
     break;
