@@ -33,12 +33,59 @@ ifeq ($(TARGET_ARCH), mips64)
 perf_arch := mips
 endif
 
-#
-# target libperf
-#
-libperf_src_files := \
+perf_src_files := \
+    perf.c \
     arch/common.c \
     arch/$(perf_arch)/util/dwarf-regs.c \
+    bench/mem-memcpy.c \
+    bench/mem-memset.c \
+    bench/sched-messaging.c \
+    bench/sched-pipe.c \
+    builtin-annotate.c \
+    builtin-bench.c \
+    builtin-buildid-cache.c \
+    builtin-buildid-list.c \
+    builtin-diff.c \
+    builtin-evlist.c \
+    builtin-help.c \
+    builtin-inject.c \
+    builtin-kmem.c \
+    builtin-kvm.c \
+    builtin-list.c \
+    builtin-lock.c \
+    builtin-mem.c \
+    builtin-probe.c \
+    builtin-record.c \
+    builtin-report.c \
+    builtin-sched.c \
+    builtin-script.c \
+    builtin-stat.c \
+    builtin-timechart.c \
+    builtin-top.c \
+    tests/attr.c \
+    tests/bp_signal.c \
+    tests/bp_signal_overflow.c \
+    tests/builtin-test.c \
+    tests/code-reading.c \
+    tests/dso-data.c \
+    tests/evsel-roundtrip-name.c \
+    tests/evsel-tp-sched.c \
+    tests/hists_link.c \
+    tests/keep-tracking.c \
+    tests/mmap-basic.c \
+    tests/open-syscall-all-cpus.c \
+    tests/open-syscall.c \
+    tests/open-syscall-tp-fields.c \
+    tests/parse-events.c \
+    tests/parse-no-sample-id-all.c \
+    tests/perf-record.c \
+    tests/pmu.c \
+    tests/python-use.c \
+    tests/rdpmc.c \
+    tests/sample-parsing.c \
+    tests/sw-clock.c \
+    tests/task-exit.c \
+    tests/vmlinux-kallsyms.c \
     ui/helpline.c \
     ui/hist.c \
     ui/progress.c \
@@ -119,14 +166,14 @@ libperf_src_files := \
     ../lib/traceevent/trace-seq.c \
     ../../lib/rbtree.c
 
+perf_src_files_x86 = \
+    arch/x86/util/tsc.c \
+    tests/perf-time-to-tsc.c \
+
 common_perf_headers := \
     $(LOCAL_PATH)/../lib \
     $(LOCAL_PATH)/util/include \
     $(LOCAL_PATH)/util \
-    bionic/libc/kernel/uapi \
-
-common_elfutil_headers := \
-    external/elfutils/include/ \
 
 common_clang_compiler_flags := \
     -Wno-int-conversion \
@@ -172,69 +219,6 @@ common_predefined_macros := \
     -DNO_LIBNUMA \
     -DNO_LIBAUDIT \
 
-# glibc has the obsolete on_exit, which collides with perf's redefinition.
-host_predefined_macros := \
-    -DHAVE_ON_EXIT \
-
-#
-# target perf
-#
-perf_src_files := \
-    perf.c \
-    bench/mem-memcpy.c \
-    bench/mem-memset.c \
-    bench/sched-messaging.c \
-    bench/sched-pipe.c \
-    builtin-annotate.c \
-    builtin-bench.c \
-    builtin-buildid-cache.c \
-    builtin-buildid-list.c \
-    builtin-diff.c \
-    builtin-evlist.c \
-    builtin-help.c \
-    builtin-inject.c \
-    builtin-kmem.c \
-    builtin-kvm.c \
-    builtin-list.c \
-    builtin-lock.c \
-    builtin-mem.c \
-    builtin-probe.c \
-    builtin-record.c \
-    builtin-report.c \
-    builtin-sched.c \
-    builtin-script.c \
-    builtin-stat.c \
-    builtin-timechart.c \
-    builtin-top.c \
-    tests/attr.c \
-    tests/bp_signal.c \
-    tests/bp_signal_overflow.c \
-    tests/builtin-test.c \
-    tests/code-reading.c \
-    tests/dso-data.c \
-    tests/evsel-roundtrip-name.c \
-    tests/evsel-tp-sched.c \
-    tests/hists_link.c \
-    tests/keep-tracking.c \
-    tests/mmap-basic.c \
-    tests/open-syscall-all-cpus.c \
-    tests/open-syscall.c \
-    tests/open-syscall-tp-fields.c \
-    tests/parse-events.c \
-    tests/parse-no-sample-id-all.c \
-    tests/perf-record.c \
-    tests/pmu.c \
-    tests/python-use.c \
-    tests/rdpmc.c \
-    tests/sample-parsing.c \
-    tests/sw-clock.c \
-    tests/task-exit.c \
-    tests/vmlinux-kallsyms.c \
-
-perf_src_files_x86 = \
-    arch/x86/util/tsc.c \
-    tests/perf-time-to-tsc.c \
-
 include $(CLEAR_VARS)
 ifeq ($(TARGET_ARCH),arm)
 # b/17167262, builtin-report.c and builtin-top.c have undefined __aeabi_read_tp
@@ -242,7 +226,7 @@ ifeq ($(TARGET_ARCH),arm)
 LOCAL_CLANG := false
 endif
 
-LOCAL_SRC_FILES := $(libperf_src_files) $(perf_src_files)
+LOCAL_SRC_FILES := $(perf_src_files)
 LOCAL_SRC_FILES_x86 := $(perf_src_files_x86)
 LOCAL_SRC_FILES_x86_64 := $(perf_src_files_x86)
 
@@ -253,56 +237,19 @@ LOCAL_SHARED_LIBRARIES := libdl
 LOCAL_STATIC_LIBRARIES := \
     libdwfl \
     libdw \
-    libebl \
     libdwelf \
+    libebl \
     libelf \
     libz \
 
 LOCAL_CFLAGS += $(common_predefined_macros)
 LOCAL_CFLAGS += $(common_compiler_flags)
 LOCAL_CLANG_CFLAGS += $(common_clang_compiler_flags)
-LOCAL_C_INCLUDES := $(common_perf_headers) $(common_elfutil_headers)
+LOCAL_C_INCLUDES := $(common_perf_headers) external/elfutils/include/
 
 LOCAL_MODULE := perf
 LOCAL_MODULE_TAGS := eng
-LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
 
 include $(BUILD_EXECUTABLE)
-
-#
-# host perf
-#
-include $(CLEAR_VARS)
-
-LOCAL_SRC_FILES := $(perf_src_files) $(libperf_src_files)
-LOCAL_SRC_FILES_x86 := $(perf_src_files_x86)
-LOCAL_SRC_FILES_x86_64 := $(perf_src_files_x86)
-
-# TODO: libebl tries to dlopen libebl_$arch.so, which we don't actually build.
-# At the moment it's probably pulling in the ones from the host OS' perf, at
-# least on Linux.
-LOCAL_STATIC_LIBRARIES := \
-    libdwfl \
-    libdw \
-    libebl \
-    libdwelf \
-    libelf \
-    libz \
-
-LOCAL_CFLAGS += $(common_predefined_macros) $(host_predefined_macros)
-LOCAL_CFLAGS += $(common_compiler_flags)
-LOCAL_CLANG_CFLAGS += $(common_clang_compiler_flags)
-
-LOCAL_C_INCLUDES := $(common_perf_headers) $(common_elfutil_headers)
-
-LOCAL_C_INCLUDES += bionic/libc/kernel/uapi/asm-x86 # The kvm stuff needs <asm/svm.h>.
-
-LOCAL_LDLIBS := -ldl -lpthread -lrt
-
-LOCAL_MODULE := perfhost
-LOCAL_MODULE_TAGS := eng
-LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
-
-include $(BUILD_HOST_EXECUTABLE)
 
 endif #cur_platform
