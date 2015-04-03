@@ -210,6 +210,7 @@ common_predefined_macros := \
     -DPERF_VERSION='"perf.3.12_android"' \
     -DHAVE_ELF_GETPHDRNUM \
     -DHAVE_CPLUS_DEMANGLE \
+    -DHAVE_STRLCPY \
     -DLIBELF_SUPPORT \
     -DLIBELF_MMAP \
     -DNO_NEWT_SUPPORT \
